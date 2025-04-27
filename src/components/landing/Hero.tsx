@@ -11,20 +11,20 @@ const Hero = () => {
           <div className="flex flex-col justify-center space-y-4">
             <div className="space-y-2">
               <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl xl:text-6xl/none">
-                Build Trust. <span className="gradient-text">Certify Culture.</span>
+                Build Trust. <span className="gradient-text">Certify Your Culture.</span>
               </h1>
               <p className="max-w-[600px] text-gray-500 md:text-xl">
-                PulsePlace.ai is the enterprise platform for transparent workplace culture certification.
-                Discover how your team's trust and wellbeing stack up against industry benchmarks.
+                PulsePlace.ai certifies organizations based on transparent trust, engagement, 
+                and wellbeing standards — powered by explainable AI.
               </p>
             </div>
             <div className="flex flex-col gap-2 min-[400px]:flex-row">
-              <Link to="/survey">
+              <Link to="/pulse-score-lite">
                 <Button size="lg" className="bg-pulse-blue hover:bg-pulse-blue/90">
-                  Start Assessment <ArrowRight className="ml-2 h-4 w-4" />
+                  Start Your Free Culture Assessment <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </Link>
-              <a href="#learn-more">
+              <a href="#how-it-works">
                 <Button size="lg" variant="outline">
                   Learn More
                 </Button>
@@ -58,7 +58,7 @@ const Hero = () => {
                       </div>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-xs text-gray-500">Growth</span>
+                      <span className="text-xs text-gray-500">Engagement</span>
                       <div className="h-2 w-3/4 bg-gray-100 rounded-full overflow-hidden">
                         <div className="h-full bg-pulse-teal w-[85%] rounded-full"></div>
                       </div>

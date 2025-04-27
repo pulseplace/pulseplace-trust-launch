@@ -13,7 +13,7 @@ const CertificationBadgePreview = ({ className }: CertificationBadgePreviewProps
         <Award className="h-10 w-10 text-pulse-blue" />
       </div>
       <div className="text-center">
-        <div className="font-bold">PulsePlace Certified</div>
+        <div className="font-bold">Pulse Certified™</div>
         <div className="text-sm text-gray-500">Trust Score: 85</div>
         <div className="text-xs mt-1">Valid until June 15, 2026</div>
         <div className="mt-2 text-xs text-pulse-blue">
