@@ -7,6 +7,7 @@ import { toast } from "@/components/ui/use-toast";
 import { Textarea } from "@/components/ui/textarea";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
+import { Link } from "react-router-dom";
 
 const CertificationPage = () => {
   const [embedCode, setEmbedCode] = useState(
@@ -304,21 +305,15 @@ const CertificationPage = () => {
                         </TooltipTrigger>
                         <TooltipContent>Copy link</TooltipContent>
                       </Tooltip>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <Button
-                            variant="outline"
-                            size="icon"
-                            as="a"
-                            href="https://pulseplace.ai/certification/COMPANY123"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <ExternalLink className="h-4 w-4" />
-                          </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>Open in new tab</TooltipContent>
-                      </Tooltip>
+                      <Link 
+                        to="https://pulseplace.ai/certification/COMPANY123" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                      >
+                        <Button variant="outline" size="icon">
+                          <ExternalLink className="h-4 w-4" />
+                        </Button>
+                      </Link>
                     </div>
                   </div>
                 </TabsContent>

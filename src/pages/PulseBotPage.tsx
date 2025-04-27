@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -9,12 +8,12 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 // Sample chat history for demo
-const initialMessages = [
+const initialMessages: Message[] = [
   {
     id: 1,
     type: "bot",
-    content: "Hello! I'm PulseBot, your workplace culture assistant. I can help you understand your organization's culture metrics, suggest improvements, and answer questions about building trust in your workplace. How can I assist you today?",
-  },
+    content: "Hi! I'm your PulseBot Assistant. Ask me anything about culture surveys, PulseScore, or certification."
+  }
 ];
 
 const suggestedPrompts = [

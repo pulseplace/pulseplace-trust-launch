@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useLocation, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -14,10 +13,8 @@ const ThankYouPage = () => {
     email: "user@example.com" 
   };
 
-  // Determine certification status based on PulseScore
   const certificationStatus = pulseScore >= 70 ? "certified" : "not-certified";
   
-  // Get feedback message based on score
   const getFeedback = () => {
     if (pulseScore >= 85) {
       return "Exceptional culture health! Your organization demonstrates excellence in trust and wellbeing.";
@@ -67,12 +64,11 @@ const ThankYouPage = () => {
                 <div className="relative">
                   <Progress 
                     value={pulseScore} 
-                    className="h-4" 
-                    indicatorClassName={
+                    className={`h-4 ${
                       pulseScore >= 85 ? "bg-green-500" :
                       pulseScore >= 70 ? "bg-pulse-blue" :
                       pulseScore >= 50 ? "bg-amber-500" : "bg-red-500"
-                    }
+                    }`}
                   />
                   <div className="absolute -top-2 left-[70%] h-6 border-l-2 border-dashed border-gray-400">
                     <div className="absolute -left-[30px] -top-4 text-xs text-gray-500">
