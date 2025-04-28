@@ -1,41 +1,11 @@
-
-import React, { useState, useRef, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Send, Bot, Info, AlertTriangle, Sparkles, X } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import React, { useState } from "react";
 import { toast } from "@/hooks/use-toast";
+import ChatInterface from "@/components/pulsebot/ChatInterface";
+import SuggestedTopics from "@/components/pulsebot/SuggestedTopics";
+import InsightsPanel from "@/components/pulsebot/InsightsPanel";
+import { Message } from "@/components/pulsebot/types";
 
-// Message types for better type safety
-type MessageRole = "user" | "bot" | "system";
-
-interface Message {
-  id: number;
-  type: MessageRole;
-  content: string;
-  isThinking?: boolean; // For loading state
-  context?: string; // Additional context like data source or confidence level
-  alertLevel?: "none" | "info" | "warning" | "critical"; // For highlighting important insights
-}
-
-// Initial welcome message
-const initialMessages: Message[] = [
-  {
-    id: 1,
-    type: "system",
-    content: "Welcome to PulseBot Assistant",
-  },
-  {
-    id: 2,
-    type: "bot",
-    content: "Hi! I'm your PulseBot AI assistant focused on workplace culture. I can help you understand your PulseScore metrics, interpret trust trends, or provide evidence-based recommendations for improving workplace culture. How can I assist you today?",
-  }
-];
-
-// Pre-defined prompts with culture-focused questions
+// Pre-defined prompts
 const suggestedPrompts = [
   "How can we improve psychological safety?",
   "What metrics should we track for wellbeing?",
@@ -52,18 +22,23 @@ const offTopicKeywords = [
   "password", "credentials", "confidential"
 ];
 
+// Initial welcome message
+const initialMessages: Message[] = [
+  {
+    id: 1,
+    type: "system",
+    content: "Welcome to PulseBot Assistant",
+  },
+  {
+    id: 2,
+    type: "bot",
+    content: "Hi! I'm your PulseBot AI assistant focused on workplace culture. I can help you understand your PulseScore metrics, interpret trust trends, or provide evidence-based recommendations for improving workplace culture. How can I assist you today?",
+  }
+];
+
 const PulseBotPage = () => {
   const [messages, setMessages] = useState<Message[]>(initialMessages);
-  const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
-  
-  // Auto-scroll to bottom when new messages arrive
-  useEffect(() => {
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
-    }
-  }, [messages]);
 
   // Check if a message might be off-topic
   const isOffTopic = (message: string): boolean => {
@@ -169,21 +144,18 @@ const PulseBotPage = () => {
     });
   };
 
-  const handleSend = async () => {
-    if (!input.trim()) return;
+  const handleSendMessage = async (message: string) => {
+    if (!message.trim()) return;
     
-    // Add user message
     const userMessage: Message = {
       id: Date.now(),
       type: "user",
-      content: input.trim(),
+      content: message.trim(),
     };
     
     setMessages(prev => [...prev, userMessage]);
-    setInput("");
     setIsLoading(true);
 
-    // Add thinking indicator
     const thinkingId = Date.now() + 1;
     setMessages(prev => [...prev, {
       id: thinkingId,
@@ -192,41 +164,26 @@ const PulseBotPage = () => {
       isThinking: true,
     }]);
     
-    // Generate response
     try {
       const response = await generateResponse(userMessage.content);
       
-      // Replace thinking indicator with real response
       setMessages(prev => 
         prev.filter(m => m.id !== thinkingId).concat(response)
       );
     } catch (error) {
-      // Handle error
       toast({
         title: "Error",
         description: "Failed to generate a response. Please try again.",
         variant: "destructive",
       });
       
-      // Remove thinking indicator
       setMessages(prev => prev.filter(m => m.id !== thinkingId));
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey && !isLoading) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
-
-  const handlePromptClick = (prompt: string) => {
-    setInput(prompt);
-  };
-
-  const clearChat = () => {
+  const handleClearChat = () => {
     setMessages(initialMessages);
     toast({
       title: "Chat cleared",
@@ -236,230 +193,30 @@ const PulseBotPage = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">PulseBot</h1>
-          <p className="text-gray-500">
-            Your AI workplace culture assistant powered by PulsePlace.ai
-          </p>
-        </div>
-        <Button 
-          variant="outline" 
-          size="sm" 
-          onClick={clearChat}
-          className="flex items-center gap-1"
-        >
-          <X className="h-4 w-4" />
-          Clear Chat
-        </Button>
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">PulseBot</h1>
+        <p className="text-gray-500">
+          Your AI workplace culture assistant powered by PulsePlace.ai
+        </p>
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 flex flex-col h-[calc(100vh-220px)]">
-          <Card className="flex-1 flex flex-col">
-            <CardHeader className="border-b">
-              <div className="flex items-center">
-                <Avatar className="h-8 w-8 mr-2 bg-pulse-blue">
-                  <AvatarFallback><Bot className="h-4 w-4" /></AvatarFallback>
-                </Avatar>
-                <CardTitle className="text-lg">
-                  PulseBot
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className="inline-block ml-2 h-4 w-4 text-gray-400 cursor-help" />
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-xs">
-                      <p>PulseBot analyzes your organization's culture data to provide personalized insights and evidence-based recommendations.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </CardTitle>
-              </div>
-            </CardHeader>
-            <CardContent className="flex-1 overflow-hidden p-0">
-              <ScrollArea className="h-full p-4" ref={scrollAreaRef}>
-                <div className="space-y-4">
-                  {messages.map((message) => {
-                    if (message.type === "system") {
-                      return (
-                        <div key={message.id} className="text-center my-4">
-                          <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
-                            {message.content}
-                          </span>
-                        </div>
-                      );
-                    }
-                    
-                    return (
-                      <div
-                        key={message.id}
-                        className={`flex ${message.type === "user" ? "justify-end" : "justify-start"}`}
-                      >
-                        <div
-                          className={`max-w-[85%] rounded-lg p-3 ${
-                            message.type === "user"
-                              ? "bg-pulse-blue text-white"
-                              : message.alertLevel === "warning" 
-                                ? "bg-amber-50 border border-amber-200" 
-                                : message.alertLevel === "info"
-                                  ? "bg-blue-50 border border-blue-200"
-                                  : message.alertLevel === "critical"
-                                    ? "bg-red-50 border border-red-200"
-                                    : "bg-gray-100"
-                          }`}
-                        >
-                          {message.type === "bot" && (
-                            <div className="flex items-center mb-1">
-                              {message.isThinking ? (
-                                <>
-                                  <Bot className="h-4 w-4 mr-1" />
-                                  <span className="text-xs font-medium">PulseBot is thinking</span>
-                                </>
-                              ) : message.alertLevel === "warning" ? (
-                                <>
-                                  <AlertTriangle className="h-4 w-4 mr-1 text-amber-500" />
-                                  <span className="text-xs font-medium text-amber-700">PulseBot Alert</span>
-                                </>
-                              ) : message.alertLevel === "info" ? (
-                                <>
-                                  <Sparkles className="h-4 w-4 mr-1 text-blue-500" />
-                                  <span className="text-xs font-medium text-blue-700">PulseBot Insight</span>
-                                </>
-                              ) : (
-                                <>
-                                  <Bot className="h-4 w-4 mr-1" />
-                                  <span className="text-xs font-medium">PulseBot</span>
-                                </>
-                              )}
-                            </div>
-                          )}
-                          
-                          {message.isThinking ? (
-                            <div className="flex space-x-1">
-                              <div className="h-2 w-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "0ms" }}></div>
-                              <div className="h-2 w-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "150ms" }}></div>
-                              <div className="h-2 w-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: "300ms" }}></div>
-                            </div>
-                          ) : (
-                            <div>
-                              <p className="text-sm whitespace-pre-line">{message.content}</p>
-                              {message.context && (
-                                <p className="text-xs mt-2 text-gray-500 italic">
-                                  {message.context}
-                                </p>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </ScrollArea>
-            </CardContent>
-            <div className="p-4 border-t">
-              <div className="flex space-x-2">
-                <Input
-                  placeholder="Ask about workplace culture, trust metrics, or engagement strategies..."
-                  value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  onKeyDown={handleKeyDown}
-                  disabled={isLoading}
-                  className="flex-1"
-                />
-                <Button 
-                  onClick={handleSend} 
-                  disabled={!input.trim() || isLoading}
-                  className="bg-pulse-blue hover:bg-pulse-blue/90"
-                >
-                  <Send className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-          </Card>
+          <ChatInterface
+            messages={messages}
+            isLoading={isLoading}
+            onSendMessage={handleSendMessage}
+            onClearChat={handleClearChat}
+          />
         </div>
         
         <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Suggested Topics</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              {suggestedPrompts.map((prompt, index) => (
-                <Button
-                  key={index}
-                  variant="outline"
-                  className="w-full justify-start text-left"
-                  onClick={() => handlePromptClick(prompt)}
-                  disabled={isLoading}
-                >
-                  {prompt}
-                </Button>
-              ))}
-            </CardContent>
-          </Card>
-          
-          <Card>
-            <CardHeader>
-              <CardTitle>Your Culture Insights</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <div className="flex justify-between items-center mb-1">
-                  <span className="text-sm font-medium">Trust Index</span>
-                  <div className="flex items-center">
-                    <span className="text-sm font-medium">82</span>
-                    <span className="text-xs text-green-600 ml-1">↑3</span>
-                  </div>
-                </div>
-                <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-pulse-blue w-[82%] rounded-full"></div>
-                </div>
-              </div>
-              
-              <div>
-                <div className="flex justify-between items-center mb-1">
-                  <span className="text-sm font-medium">Wellbeing Score</span>
-                  <div className="flex items-center">
-                    <span className="text-sm font-medium">78</span>
-                    <span className="text-xs text-green-600 ml-1">↑5</span>
-                  </div>
-                </div>
-                <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-blue-500 w-[78%] rounded-full"></div>
-                </div>
-              </div>
-              
-              <div>
-                <div className="flex justify-between items-center mb-1">
-                  <span className="text-sm font-medium">Recognition</span>
-                  <div className="flex items-center">
-                    <span className="text-sm font-medium">70</span>
-                    <span className="text-xs text-red-600 ml-1">↓2</span>
-                  </div>
-                </div>
-                <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-purple-500 w-[70%] rounded-full"></div>
-                </div>
-              </div>
-              
-              <div>
-                <div className="flex justify-between items-center mb-1">
-                  <span className="text-sm font-medium">Growth Opportunities</span>
-                  <div className="flex items-center">
-                    <span className="text-sm font-medium">81</span>
-                    <span className="text-xs text-green-600 ml-1">↑4</span>
-                  </div>
-                </div>
-                <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden">
-                  <div className="h-full bg-green-500 w-[81%] rounded-full"></div>
-                </div>
-              </div>
-              
-              <div className="text-xs text-gray-500 text-center mt-2">
-                Updated 2 days ago
-              </div>
-            </CardContent>
-          </Card>
+          <SuggestedTopics
+            topics={suggestedPrompts}
+            onTopicSelect={(topic) => handleSendMessage(topic)}
+            isLoading={isLoading}
+          />
+          <InsightsPanel />
         </div>
       </div>
     </div>
