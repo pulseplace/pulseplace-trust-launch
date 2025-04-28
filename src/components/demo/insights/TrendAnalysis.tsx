@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
@@ -40,7 +41,7 @@ const TrendAnalysis: React.FC<TrendAnalysisProps> = ({ title, description, data 
                 strokeWidth={2}
                 dot={{ fill: "#1A5AFF" }}
               />
-              {data.some(point => point.prediction) && (
+              {data.some(point => point.prediction !== undefined) && (
                 <Line
                   type="monotone"
                   dataKey="prediction"

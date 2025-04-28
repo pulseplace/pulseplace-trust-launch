@@ -13,8 +13,8 @@ const trendData = [
   { date: "Apr", value: 79 },
   { date: "May", value: 82 },
   { date: "Jun", value: 85 },
-  { date: "Jul", prediction: 87 },
-  { date: "Aug", prediction: 89 },
+  { date: "Jul", value: 87, prediction: 87 },
+  { date: "Aug", value: 0, prediction: 89 },
 ];
 
 const sentimentData = [
