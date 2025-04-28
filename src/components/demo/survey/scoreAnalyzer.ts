@@ -16,7 +16,14 @@ export const calculateWeightedScore = (
   })).filter(item => item.value !== null);
   
   // Calculate category scores
-  const categoryScores = calculateCategoryScores(validAnswers);
+  const rawCategoryScores = calculateCategoryScores(validAnswers);
+  
+  // Ensure proper typing of category scores
+  const categoryScores = {
+    trust: Math.round(rawCategoryScores.trust),
+    engagement: Math.round(rawCategoryScores.engagement),
+    wellbeing: Math.round(rawCategoryScores.wellbeing)
+  };
   
   // Calculate total score using PulsePlace formula (40% trust, 30% engagement, 30% wellbeing)
   const totalScore = Math.round(
@@ -27,14 +34,11 @@ export const calculateWeightedScore = (
 
   return {
     totalScore,
-    categoryScores: {
-      trust: Math.round(categoryScores.trust),
-      engagement: Math.round(categoryScores.engagement),
-      wellbeing: Math.round(categoryScores.wellbeing)
-    },
+    categoryScores,
     strengths: identifyStrengths(answers, questions),
     opportunities: identifyOpportunities(answers, questions),
     recommendations: generateRecommendations(answers, questions, categoryScores),
     benchmarkComparison: calculateBenchmarkComparison(answers, questions)
   };
 };
+
