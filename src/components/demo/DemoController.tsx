@@ -1,3 +1,4 @@
+
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDemo, DemoStage } from "@/contexts/DemoContext";
@@ -20,6 +21,11 @@ const DemoController = () => {
       navigate("/");
     }
   }, [isDemoActive, navigate]);
+
+  // Debug logging
+  useEffect(() => {
+    console.log("Demo Stage Changed:", currentStage);
+  }, [currentStage]);
 
   if (!isDemoActive) return null;
 

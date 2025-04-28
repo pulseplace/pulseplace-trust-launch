@@ -27,6 +27,7 @@ const DemoSurvey = () => {
   const [showInsight, setShowInsight] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
   const [scoreAnalysis, setScoreAnalysis] = useState<any>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
     setShowInsight(false);
@@ -56,10 +57,11 @@ const DemoSurvey = () => {
   // Effect to proceed to next stage when survey is completed
   useEffect(() => {
     if (isComplete) {
+      setIsProcessing(true);
       // Add a small delay for a smoother transition
       const timer = setTimeout(() => {
         nextStage();
-      }, 500);
+      }, 2000);
       
       return () => clearTimeout(timer);
     }
@@ -101,6 +103,16 @@ const DemoSurvey = () => {
   // Calculate real-time score if we have some answers
   const currentScore = scoreAnalysis?.totalScore || 0;
   const hasAnsweredSome = answers.some(a => a !== null);
+
+  // DEBUG logging
+  console.log("Survey Status:", {
+    isComplete,
+    isProcessing,
+    currentQuestion,
+    totalQuestions: questions.length,
+    answersCount: answers.filter(a => a !== null).length,
+    pulseScore: currentScore
+  });
 
   return (
     <div className="container px-4 py-12 mx-auto">
@@ -169,55 +181,57 @@ const DemoSurvey = () => {
           </CardContent>
         </Card>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            <Card>
-              <CardContent className="pt-6">
-                <SurveyQuestion
-                  id={question.id}
-                  question={question.question}
-                  options={question.options}
-                  value={answers[currentQuestion]}
-                  onChange={handleAnswerChange}
-                  category={question.category}
-                  contextualHelp={question.contextualHelp}
-                />
-              </CardContent>
-            </Card>
+        {!isComplete && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2">
+              <Card>
+                <CardContent className="pt-6">
+                  <SurveyQuestion
+                    id={question.id}
+                    question={question.question}
+                    options={question.options}
+                    value={answers[currentQuestion]}
+                    onChange={handleAnswerChange}
+                    category={question.category}
+                    contextualHelp={question.contextualHelp}
+                  />
+                </CardContent>
+              </Card>
+            </div>
+            
+            <div className="lg:col-span-1">
+              <Card className="h-full">
+                <CardHeader>
+                  <CardTitle className="flex items-center text-base">
+                    <BrainCircuit className="h-5 w-5 mr-2 text-pulse-blue" />
+                    AI Context & Insights
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {showInsight ? (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <AIInsight {...question.aiInsight} />
+                      <ResponseFeedback 
+                        answer={answers[currentQuestion]} 
+                        questionId={question.id}
+                      />
+                    </motion.div>
+                  ) : (
+                    <div className="text-sm text-gray-500 italic">
+                      Answer the question to see AI insights...
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            </div>
           </div>
-          
-          <div className="lg:col-span-1">
-            <Card className="h-full">
-              <CardHeader>
-                <CardTitle className="flex items-center text-base">
-                  <BrainCircuit className="h-5 w-5 mr-2 text-pulse-blue" />
-                  AI Context & Insights
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                {showInsight ? (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <AIInsight {...question.aiInsight} />
-                    <ResponseFeedback 
-                      answer={answers[currentQuestion]} 
-                      questionId={question.id}
-                    />
-                  </motion.div>
-                ) : (
-                  <div className="text-sm text-gray-500 italic">
-                    Answer the question to see AI insights...
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+        )}
         
-        <SurveyExplanation />
+        {!isComplete && <SurveyExplanation />}
       </div>
       
       {!isComplete && (
@@ -231,16 +245,26 @@ const DemoSurvey = () => {
         />
       )}
       
-      {isComplete && (
+      {isProcessing && (
         <motion.div 
           initial={{ opacity: 0 }} 
           animate={{ opacity: 1 }} 
-          className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg z-50 p-4"
+          className="fixed inset-0 bg-white/80 flex items-center justify-center z-50"
         >
-          <div className="container flex justify-center">
-            <div className="flex items-center">
-              <span className="text-pulse-blue font-medium mr-2">Processing your responses...</span>
-              <div className="h-5 w-5 border-2 border-t-pulse-blue border-r-pulse-blue rounded-full animate-spin"></div>
+          <div className="bg-white p-8 rounded-xl shadow-lg text-center max-w-md">
+            <div className="inline-flex items-center justify-center p-3 bg-pulse-blue/10 rounded-full mb-6">
+              <BrainCircuit className="h-10 w-10 text-pulse-blue" />
+            </div>
+            <h2 className="text-2xl font-bold text-pulse-navy mb-3">Analyzing Responses</h2>
+            <p className="text-gray-600 mb-6">
+              Our AI is processing your responses and preparing your PulseScore™ analysis...
+            </p>
+            
+            <div className="flex flex-col items-center">
+              <div className="relative w-full h-2 bg-gray-100 rounded-full overflow-hidden mb-3">
+                <div className="absolute left-0 top-0 h-full bg-pulse-blue animate-pulse-progress"></div>
+              </div>
+              <div className="h-8 w-8 border-3 border-t-pulse-blue border-r-pulse-blue border-b-transparent border-l-transparent rounded-full animate-spin"></div>
             </div>
           </div>
         </motion.div>
