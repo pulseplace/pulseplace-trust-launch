@@ -1,3 +1,4 @@
+
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
 // Demo stages to track progress
@@ -13,10 +14,26 @@ export enum DemoStage {
   SHARING = "sharing",
 }
 
+interface CategoryScores {
+  trust: number;
+  engagement: number;
+  wellbeing: number;
+}
+
+interface PulseScoreDetails {
+  totalScore: number;
+  categoryScores: CategoryScores;
+  strengths: string[];
+  opportunities: string[];
+  recommendations: string[];
+  benchmarkComparison: number;
+}
+
 interface DemoContextType {
   isDemoActive: boolean;
   currentStage: DemoStage;
   pulseScore: number;
+  pulseScoreDetails: PulseScoreDetails | null;
   organizationName: string;
   startDemo: () => void;
   exitDemo: () => void;
@@ -24,7 +41,32 @@ interface DemoContextType {
   previousStage: () => void;
   setStage: (stage: DemoStage) => void;
   progressPercentage: number;
+  setPulseScore: (score: number) => void;
+  setPulseScoreDetails: (details: PulseScoreDetails) => void;
+  setOrganizationName: (name: string) => void;
 }
+
+const defaultPulseScoreDetails: PulseScoreDetails = {
+  totalScore: 85,
+  categoryScores: {
+    trust: 88, 
+    engagement: 82, 
+    wellbeing: 85
+  },
+  strengths: [
+    "Strong leadership transparency",
+    "High level of psychological safety",
+    "Excellent work-life balance"
+  ],
+  opportunities: [
+    "Improve resource allocation"
+  ],
+  recommendations: [
+    "Implement regular transparent communication channels from leadership",
+    "Create clear accountability frameworks for team commitments"
+  ],
+  benchmarkComparison: 12
+};
 
 const DemoContext = createContext<DemoContextType | undefined>(undefined);
 
@@ -32,6 +74,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
   const [isDemoActive, setIsDemoActive] = useState(false);
   const [currentStage, setCurrentStage] = useState<DemoStage>(DemoStage.WELCOME);
   const [pulseScore, setPulseScore] = useState(85);
+  const [pulseScoreDetails, setPulseScoreDetails] = useState<PulseScoreDetails | null>(null);
   const [organizationName, setOrganizationName] = useState("Acme Inc.");
 
   const stages = Object.values(DemoStage);
@@ -72,6 +115,7 @@ export function DemoProvider({ children }: { children: ReactNode }) {
         isDemoActive,
         currentStage,
         pulseScore,
+        pulseScoreDetails: pulseScoreDetails || defaultPulseScoreDetails,
         organizationName,
         startDemo,
         exitDemo,
@@ -79,6 +123,9 @@ export function DemoProvider({ children }: { children: ReactNode }) {
         previousStage,
         setStage,
         progressPercentage,
+        setPulseScore,
+        setPulseScoreDetails,
+        setOrganizationName,
       }}
     >
       {children}
