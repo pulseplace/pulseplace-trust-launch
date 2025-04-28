@@ -1,6 +1,6 @@
 
 import React, { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Navbar from "@/components/landing/Navbar";
 import Hero from "@/components/landing/Hero";
 import ProblemStatement from "@/components/landing/ProblemStatement";
@@ -56,6 +56,20 @@ const LandingPage = () => {
         <HowItWorks />
         <Testimonials />
         <CallToAction />
+        
+        <div className="bg-pulse-navy/5 py-8 text-center">
+          <div className="container px-4 mx-auto">
+            <h3 className="text-lg font-medium mb-2">Project Resources</h3>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Link 
+                to="/competitive-analysis" 
+                className="text-pulse-blue hover:underline font-medium"
+              >
+                Competitive Analysis & Feature Roadmap
+              </Link>
+            </div>
+          </div>
+        </div>
       </main>
       <Footer />
     </div>

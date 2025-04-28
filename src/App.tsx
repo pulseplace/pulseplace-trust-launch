@@ -16,6 +16,7 @@ import AdminPanel from "./pages/AdminPanel";
 import NotFound from "./pages/NotFound";
 import PulseBotPage from "./pages/PulseBotPage";
 import CertificationPage from "./pages/CertificationPage";
+import CompetitiveAnalysis from "./pages/CompetitiveAnalysis";
 import DemoController from "./components/demo/DemoController";
 
 const queryClient = new QueryClient();
@@ -32,17 +33,20 @@ const App = () => (
             <Route path="/survey" element={<SurveyPage />} />
             <Route path="/thank-you" element={<ThankYouPage />} />
             <Route path="/demo" element={<DemoController />} />
+            <Route path="/competitive-analysis" element={<CompetitiveAnalysis />} />
             
             {/* Dashboard Routes */}
             <Route path="/dashboard" element={<DashboardLayout />}>
               <Route index element={<TeamDashboard />} />
               <Route path="pulsebot" element={<PulseBotPage />} />
               <Route path="certification" element={<CertificationPage />} />
+              <Route path="competitive-analysis" element={<CompetitiveAnalysis />} />
             </Route>
             
             {/* Admin Routes */}
             <Route path="/admin" element={<DashboardLayout isAdmin={true} />}>
               <Route index element={<AdminPanel />} />
+              <Route path="competitive-analysis" element={<CompetitiveAnalysis />} />
             </Route>
             
             <Route path="*" element={<NotFound />} />
