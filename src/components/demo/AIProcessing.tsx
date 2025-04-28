@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Brain, Sparkles, Cpu } from "lucide-react";
@@ -22,7 +21,6 @@ const AIProcessing = ({
   useEffect(() => {
     const interval = setInterval(() => {
       setProgressValue((prev) => {
-        // Accelerate progress more at the beginning, slow down near the end
         const increment = 100 - prev > 50 ? 3 : 1;
         return Math.min(prev + increment, 100);
       });
@@ -82,31 +80,40 @@ const AIProcessing = ({
         </motion.div>
       </div>
 
-      <h3 className="text-lg font-medium mt-4 text-pulse-navy">{message}</h3>
-      
-      <div className="w-64 bg-gray-200 rounded-full h-2.5 my-4">
-        <div
-          className="bg-pulse-blue h-2.5 rounded-full"
-          style={{ width: `${progressValue}%` }}
-        />
-      </div>
-
-      <div className="flex space-x-2 mt-2">
-        {Array.from({ length: 3 }).map((_, i) => (
-          <motion.div
-            key={i}
-            className="h-2 w-2 bg-pulse-blue rounded-full"
-            animate={{
-              opacity: [0.3, 1, 0.3],
-              scale: [0.8, 1.2, 0.8],
-            }}
-            transition={{
-              duration: 1,
-              repeat: Infinity,
-              delay: i * 0.2,
-            }}
+      <div className="flex flex-col items-center space-y-4 mt-4">
+        <h3 className="text-lg font-medium text-pulse-navy">{message}</h3>
+        
+        <div className="w-64 bg-gray-200 rounded-full h-2.5">
+          <div
+            className="bg-pulse-blue h-2.5 rounded-full transition-all duration-300"
+            style={{ width: `${progressValue}%` }}
           />
-        ))}
+        </div>
+
+        <div className="text-sm text-gray-600 text-center">
+          {progressValue < 33 && "Analyzing patterns..."}
+          {progressValue >= 33 && progressValue < 66 && "Processing insights..."}
+          {progressValue >= 66 && progressValue < 100 && "Generating recommendations..."}
+          {progressValue === 100 && "Analysis complete!"}
+        </div>
+
+        <div className="flex space-x-2">
+          {Array.from({ length: 3 }).map((_, i) => (
+            <motion.div
+              key={i}
+              className="h-2 w-2 bg-pulse-blue rounded-full"
+              animate={{
+                opacity: [0.3, 1, 0.3],
+                scale: [0.8, 1.2, 0.8],
+              }}
+              transition={{
+                duration: 1,
+                repeat: Infinity,
+                delay: i * 0.2,
+              }}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

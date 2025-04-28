@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { MessageSquare, ChevronRight, ChevronLeft, BrainCircuit } from "lucide-react";
@@ -9,7 +8,6 @@ import { Progress } from "@/components/ui/progress";
 import DemoNavigation from "../DemoNavigation";
 import AIInsight from "../AIInsight";
 
-// Demo survey questions with AI insights
 const questions = [
   {
     id: "q1",
@@ -25,7 +23,10 @@ const questions = [
       title: "Communication Pattern Analysis",
       description: "Organizations with transparent leadership communication show 34% higher employee engagement and 29% better retention rates.",
       confidence: 94,
-      source: "PulsePlace Culture Database"
+      source: "PulsePlace Culture Database",
+      type: "insight" as const,
+      impact: "high" as const,
+      timeframe: "12 months"
     }
   },
   {
@@ -70,7 +71,6 @@ const DemoSurvey = () => {
   const [answers, setAnswers] = useState<(number | null)[]>(Array(questions.length).fill(null));
   const [showInsight, setShowInsight] = useState(false);
 
-  // Reset insight visibility when question changes
   useEffect(() => {
     setShowInsight(false);
     const timer = setTimeout(() => {
@@ -87,7 +87,6 @@ const DemoSurvey = () => {
     newAnswers[currentQuestion] = value;
     setAnswers(newAnswers);
     
-    // Show AI insight after answering
     setTimeout(() => {
       setShowInsight(true);
     }, 500);
@@ -209,7 +208,9 @@ const DemoSurvey = () => {
                       description={question.aiInsight.description}
                       confidence={question.aiInsight.confidence}
                       source={question.aiInsight.source}
-                      type={question.aiInsight.type || "insight"}
+                      type={question.aiInsight.type}
+                      impact={question.aiInsight.impact}
+                      timeframe={question.aiInsight.timeframe}
                     />
 
                     {answers[currentQuestion] === 4 || answers[currentQuestion] === 5 ? (
