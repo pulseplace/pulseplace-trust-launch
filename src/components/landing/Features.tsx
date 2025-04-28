@@ -1,8 +1,6 @@
-
 import React, { useState } from "react";
 import { Award, BarChartHorizontal, Database, MessageSquare, Badge, Shield, Lock, ChevronRight, ExternalLink } from "lucide-react";
 import { Card } from "@/components/ui/card";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
@@ -15,124 +13,130 @@ const Features = () => {
       icon: Shield,
       title: "PulseScore™",
       subtitle: "Explainable AI Scoring",
-      description: "Transparent, audit-ready workplace trust scoring combining emotion, engagement, and wellbeing dimensions.",
-      extendedDescription: "Our proprietary PulseScore algorithm analyzes 40+ workplace trust factors and provides a transparent breakdown of your organization's cultural health. Unlike black-box solutions, every score element can be traced back to specific feedback and metrics.",
-      demoTitle: "See how PulseScore works",
-      demoDescription: "Watch how PulseScore breaks down complex workplace dynamics into actionable insights that leadership can immediately implement.",
+      description: "Trust metrics that make sense - see exactly how your workplace culture score is calculated.",
+      extendedDescription: "Our proprietary PulseScore algorithm provides complete transparency in how your organization's cultural health is measured. Unlike black-box solutions, we break down each component:\n\n• Trust Dynamics (40%): Leadership transparency, peer relationships, communication patterns\n• Engagement Stability (30%): Team cohesion, role clarity, growth opportunities\n• Emotional Wellbeing (30%): Work-life harmony, stress levels, psychological safety",
+      demoTitle: "See Score Demo",
+      demoDescription: "Experience how PulseScore breaks down complex workplace dynamics into actionable metrics.",
+      actionLabel: "Calculate Your Score",
       color: "from-pulse-blue/20 to-pulse-blue/10",
       hoverColor: "group-hover:bg-pulse-blue/20",
       iconColor: "text-pulse-blue",
       demo: {
         type: "image",
         src: "/lovable-uploads/b55898f3-2485-4c4f-82c3-b6b92b4f34a5.png",
-        caption: "PulseScore dashboard showing trust metrics analysis"
+        caption: "Interactive PulseScore dashboard showing real-time trust metrics"
       }
     },
     {
       icon: Award,
       title: "Pulse Certified™",
-      subtitle: "Accreditation System",
-      description: "Earn a globally recognized culture trust certification — not just another engagement score.",
-      extendedDescription: "Pulse Certified™ is the first workplace accreditation focused specifically on trust dynamics and emotional wellbeing. Our certification process involves comprehensive assessment across multiple dimensions with clear renewal criteria and improvement pathways.",
-      demoTitle: "Certified Trust Leadership",
-      demoDescription: "Explore how leading organizations use their Pulse Certification to attract top talent and build stakeholder confidence.",
+      subtitle: "Trust Leadership Certification",
+      description: "Join elite organizations with verified workplace cultures that attract and retain top talent.",
+      extendedDescription: "Pulse Certified™ is the premier workplace culture certification program with:\n\n• Comprehensive trust assessment across 12 dimensions\n• Quarterly pulse checks to maintain certification\n• Industry-specific benchmarking\n• Public trust profile and verification\n• Digital badge for career sites and social media",
+      demoTitle: "Preview Certification",
+      demoDescription: "See how leading organizations leverage their Pulse Certification for competitive advantage.",
+      actionLabel: "Get Certified",
       color: "from-[#FEC6A1]/20 to-[#FEC6A1]/10",
       hoverColor: "group-hover:bg-[#FEC6A1]/20",
       iconColor: "text-[#F97316]",
       demo: {
         type: "image",
         src: "/lovable-uploads/b55898f3-2485-4c4f-82c3-b6b92b4f34a5.png",
-        caption: "Pulse Certified badge and certification dashboard"
+        caption: "Interactive certification dashboard with trust metrics"
       }
     },
     {
       icon: BarChartHorizontal,
       title: "Real-Time Insights",
-      subtitle: "Dashboard",
-      description: "Instant analytics on trust drivers, risk signals, engagement health — no need to wait months.",
-      extendedDescription: "Traditional employee surveys provide delayed snapshots of workplace health. Our continuous listening approach with real-time visualization allows leadership to identify emerging issues before they impact performance or retention.",
-      demoTitle: "Dynamic Trust Dashboard",
-      demoDescription: "Interact with a live dashboard showing how trends emerge and how quick responses can prevent cultural deterioration.",
+      subtitle: "Live Trust Analytics",
+      description: "Monitor workplace culture health with real-time data visualization and early warning signals.",
+      extendedDescription: "Transform raw feedback into actionable insights:\n\n• Live sentiment tracking across teams\n• Predictive attrition indicators\n• Trust trend analysis\n• Engagement pattern recognition\n• Cultural health forecasting\n• Custom report generation",
+      demoTitle: "View Live Demo",
+      demoDescription: "Watch how our real-time analytics detect and predict cultural shifts before they impact performance.",
+      actionLabel: "Explore Analytics",
       color: "from-[#E5DEFF]/20 to-[#E5DEFF]/10",
       hoverColor: "group-hover:bg-[#E5DEFF]/20",
       iconColor: "text-[#8B5CF6]",
       demo: {
         type: "image",
         src: "/lovable-uploads/b55898f3-2485-4c4f-82c3-b6b92b4f34a5.png",
-        caption: "Real-time insights dashboard with trend indicators"
+        caption: "Live dashboard showing real-time culture analytics"
       }
     },
     {
       icon: Database,
       title: "Global Benchmarking",
-      subtitle: "Index Comparison",
-      description: "Compare your trust and culture health against global standards, peers, and internal history.",
-      extendedDescription: "Contextualize your culture metrics against industry peers, regional averages, and organizational size benchmarks. Track progress over time with historical trend analysis and set realistic improvement targets based on comparable organizations.",
-      demoTitle: "Benchmark Comparison Tool",
-      demoDescription: "See how your organization compares across multiple dimensions and identify specific areas for focused improvement.",
+      subtitle: "Industry Standards",
+      description: "See how your culture metrics stack up against industry leaders and competitors.",
+      extendedDescription: "Comprehensive benchmarking data including:\n\n• Industry-specific trust baselines\n• Regional cultural norms\n• Company size comparisons\n• Growth stage analytics\n• Sector-specific engagement patterns\n• Historical trend analysis",
+      demoTitle: "Compare Metrics",
+      demoDescription: "Interactive tool to benchmark your organization against industry standards.",
+      actionLabel: "Start Comparing",
       color: "from-[#D3E4FD]/20 to-[#D3E4FD]/10",
       hoverColor: "group-hover:bg-[#D3E4FD]/20",
       iconColor: "text-[#0EA5E9]",
       demo: {
         type: "image",
         src: "/lovable-uploads/b55898f3-2485-4c4f-82c3-b6b92b4f34a5.png",
-        caption: "Industry comparison chart with benchmark analysis"
+        caption: "Interactive benchmarking tool showing industry comparisons"
       }
     },
     {
       icon: MessageSquare,
       title: "PulseBot",
       subtitle: "AI Culture Assistant",
-      description: "Real-time pulse feedback, culture Q&A, and next-step coaching, tuned to your org's tone.",
-      extendedDescription: "PulseBot leverages advanced natural language processing to understand the unique cultural context of your organization. It provides personalized coaching based on your specific culture challenges and allows team members to ask sensitive questions they might not feel comfortable raising directly.",
-      demoTitle: "Meet PulseBot",
-      demoDescription: "Experience a conversation with PulseBot and see how it can help identify blind spots in your culture strategy.",
+      description: "Your 24/7 culture coach powered by advanced natural language processing.",
+      extendedDescription: "AI-powered cultural intelligence:\n\n• Anonymous feedback collection\n• Sentiment analysis\n• Cultural insight generation\n• Personalized recommendations\n• Trend identification\n• Action planning assistance",
+      demoTitle: "Chat with PulseBot",
+      demoDescription: "Experience how PulseBot helps identify and address culture challenges.",
+      actionLabel: "Try PulseBot",
       color: "from-[#FEF7CD]/20 to-[#FEF7CD]/10",
       hoverColor: "group-hover:bg-[#FEF7CD]/20",
       iconColor: "text-[#EAB308]",
       demo: {
         type: "image",
         src: "/lovable-uploads/b55898f3-2485-4c4f-82c3-b6b92b4f34a5.png",
-        caption: "PulseBot interface showing culture conversation flow"
+        caption: "Live PulseBot interaction demonstrating cultural insights"
       }
     },
     {
       icon: Badge,
       title: "Trust Badges",
-      subtitle: "Public Trust Signal",
-      description: "Downloadable, embeddable Pulse Certified™ badges to showcase your trust leadership to the world.",
-      extendedDescription: "Our digital trust badges integrate seamlessly with career sites, social profiles, and recruitment materials. Each badge includes verification links for authenticity and provides detailed certification information when potential candidates or partners want to learn more.",
-      demoTitle: "Badge Implementation",
-      demoDescription: "Discover the various ways organizations leverage trust badges to enhance their employer brand.",
+      subtitle: "Verified Culture Status",
+      description: "Showcase your commitment to workplace trust with verified digital badges.",
+      extendedDescription: "Digital trust verification system:\n\n• Customizable badge designs\n• Verification QR codes\n• Social media integration\n• API for career sites\n• Analytics tracking\n• Automated renewal notifications",
+      demoTitle: "Preview Badges",
+      demoDescription: "See how organizations showcase their culture certification across platforms.",
+      actionLabel: "View Badge Gallery",
       color: "from-[#F2FCE2]/20 to-[#F2FCE2]/10",
       hoverColor: "group-hover:bg-[#F2FCE2]/20",
       iconColor: "text-[#22C55E]",
       demo: {
         type: "image",
         src: "/lovable-uploads/b55898f3-2485-4c4f-82c3-b6b92b4f34a5.png",
-        caption: "Trust badge display options on various platforms"
+        caption: "Interactive badge customization and preview tool"
       }
     },
     {
       icon: Lock,
       title: "Privacy-First",
-      subtitle: "Architecture",
-      description: "No hidden tracking. No fake anonymity. Built with real blind aggregation and compliance in mind.",
-      extendedDescription: "Trust requires genuine anonymity. Our platform uses advanced cryptographic methods to ensure responses cannot be traced back to individuals while still providing meaningful patterns. All data is processed with GDPR, CCPA, and other privacy regulations as foundational principles, not afterthoughts.",
-      demoTitle: "Privacy Protection Demo",
-      demoDescription: "See a technical demonstration of how our blind aggregation system protects individual privacy.",
+      subtitle: "Secure & Anonymous",
+      description: "Enterprise-grade security with genuine anonymity for honest feedback.",
+      extendedDescription: "Advanced security features:\n\n• End-to-end encryption\n• Blind data aggregation\n• GDPR compliance\n• SOC 2 certification\n• Regular security audits\n• Custom data retention",
+      demoTitle: "Security Demo",
+      demoDescription: "See how we protect sensitive cultural data while maintaining actionable insights.",
+      actionLabel: "Learn About Security",
       color: "from-[#FFDEE2]/20 to-[#FFDEE2]/10",
       hoverColor: "group-hover:bg-[#FFDEE2]/20",
       iconColor: "text-[#F43F5E]",
       demo: {
         type: "image",
         src: "/lovable-uploads/b55898f3-2485-4c4f-82c3-b6b92b4f34a5.png",
-        caption: "Privacy architecture diagram showing data protection flow"
+        caption: "Security architecture and privacy protection demonstration"
       }
     }
   ];
 
-  // Animation variants for motion components
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -215,7 +219,7 @@ const Features = () => {
                       <p className="text-gray-600 text-sm mb-4">{feature.description}</p>
                       
                       <div className={`overflow-hidden transition-all duration-300 ${activeFeature === index ? 'max-h-[400px] opacity-100' : 'max-h-0 opacity-0'}`}>
-                        <p className="text-gray-700 text-sm mt-4 mb-6 leading-relaxed">
+                        <p className="text-gray-700 text-sm mt-4 mb-6 leading-relaxed whitespace-pre-line">
                           {feature.extendedDescription}
                         </p>
                         
@@ -248,14 +252,14 @@ const Features = () => {
                           variant="ghost" 
                           className={`text-xs w-full justify-between ${feature.iconColor} hover:bg-white/50`}
                         >
-                          <span>Learn more about {feature.title}</span>
+                          <span>{feature.actionLabel}</span>
                           <ChevronRight className="h-4 w-4 ml-2" />
                         </Button>
                       </PopoverTrigger>
                       <PopoverContent className="w-80 p-0">
                         <div className="p-4">
                           <h4 className="font-bold text-pulse-navy mb-2">{feature.title}</h4>
-                          <p className="text-sm text-gray-600 mb-4">{feature.extendedDescription}</p>
+                          <p className="text-sm text-gray-600 mb-4 whitespace-pre-line">{feature.extendedDescription}</p>
                           <div className="rounded-md overflow-hidden border border-gray-100">
                             <img 
                               src={feature.demo.src} 
@@ -264,8 +268,8 @@ const Features = () => {
                             />
                             <p className="text-xs text-center py-2">{feature.demo.caption}</p>
                           </div>
-                          <Button className="w-full mt-4 bg-pulse-blue hover:bg-pulse-blue/90">
-                            Request Demo
+                          <Button className={`w-full mt-4 ${feature.iconColor} bg-opacity-90 hover:bg-opacity-100`}>
+                            {feature.actionLabel}
                           </Button>
                         </div>
                       </PopoverContent>
