@@ -1,5 +1,4 @@
-
-import { Award, BarChartHorizontal, Database, MessageSquare, Badge, Lock } from "lucide-react";
+import { Award, ChartBar, Shield, MessageSquare, Badge, Lock } from "lucide-react";
 import type { Feature } from "./types";
 
 export const features: Feature[] = [
@@ -40,7 +39,7 @@ export const features: Feature[] = [
     }
   },
   {
-    icon: BarChartHorizontal,
+    icon: ChartBar,
     title: "Real-Time Insights",
     subtitle: "Live Trust Analytics",
     description: "Monitor workplace culture health with real-time data visualization and early warning signals.",
@@ -58,7 +57,7 @@ export const features: Feature[] = [
     }
   },
   {
-    icon: Database,
+    icon: Shield,
     title: "Global Benchmarking",
     subtitle: "Industry Standards",
     description: "See how your culture metrics stack up against industry leaders and competitors.",
