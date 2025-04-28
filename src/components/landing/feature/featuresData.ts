@@ -1,8 +1,10 @@
-import { Award, BarChartHorizontal, Database, MessageSquare, Badge, Shield, Lock } from "lucide-react";
 
-export const features = [
+import { Award, BarChartHorizontal, Database, MessageSquare, Badge, Lock } from "lucide-react";
+import type { Feature } from "./types";
+
+export const features: Feature[] = [
   {
-    icon: Shield,
+    icon: Award,
     title: "PulseScore™",
     subtitle: "Explainable AI Scoring",
     description: "Trust metrics that make sense - see exactly how your workplace culture score is calculated.",
@@ -20,7 +22,7 @@ export const features = [
     }
   },
   {
-    icon: Award,
+    icon: Badge,
     title: "Pulse Certified™",
     subtitle: "Trust Leadership Certification",
     description: "Join elite organizations with verified workplace cultures that attract and retain top talent.",
@@ -89,24 +91,6 @@ export const features = [
       type: "image",
       src: "/lovable-uploads/b55898f3-2485-4c4f-82c3-b6b92b4f34a5.png",
       caption: "Live PulseBot interaction demonstrating cultural insights"
-    }
-  },
-  {
-    icon: Badge,
-    title: "Trust Badges",
-    subtitle: "Verified Culture Status",
-    description: "Showcase your commitment to workplace trust with verified digital badges.",
-    extendedDescription: "Digital trust verification system:\n\n• Customizable badge designs\n• Verification QR codes\n• Social media integration\n• API for career sites\n• Analytics tracking\n• Automated renewal notifications",
-    demoTitle: "Preview Badges",
-    demoDescription: "See how organizations showcase their culture certification across platforms.",
-    actionLabel: "View Badge Gallery",
-    color: "from-[#F2FCE2]/20 to-[#F2FCE2]/10",
-    hoverColor: "group-hover:bg-[#F2FCE2]/20",
-    iconColor: "text-[#22C55E]",
-    demo: {
-      type: "image",
-      src: "/lovable-uploads/b55898f3-2485-4c4f-82c3-b6b92b4f34a5.png",
-      caption: "Interactive badge customization and preview tool"
     }
   },
   {

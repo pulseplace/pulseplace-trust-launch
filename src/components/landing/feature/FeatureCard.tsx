@@ -1,30 +1,11 @@
-
-import { LucideIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
 import { ChevronRight, ExternalLink } from "lucide-react";
+import type { Feature } from "./types";
 
-interface FeatureDemo {
-  type: string;
-  src: string;
-  caption: string;
-}
-
-interface FeatureProps {
-  icon: LucideIcon;
-  title: string;
-  subtitle: string;
-  description: string;
-  extendedDescription: string;
-  demoTitle: string;
-  demoDescription: string;
-  actionLabel: string;
-  color: string;
-  hoverColor: string;
-  iconColor: string;
-  demo: FeatureDemo;
+interface FeatureCardProps extends Feature {
   isActive: boolean;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
@@ -46,7 +27,7 @@ const FeatureCard = ({
   isActive,
   onMouseEnter,
   onMouseLeave,
-}: FeatureProps) => {
+}: FeatureCardProps) => {
   const cardVariants = {
     hidden: { y: 20, opacity: 0 },
     visible: {
