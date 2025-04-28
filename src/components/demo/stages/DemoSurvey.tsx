@@ -40,7 +40,8 @@ const DemoSurvey = () => {
     currentQuestion,
     totalQuestions: questions.length,
     answersCount: answers.filter(a => a !== null).length,
-    pulseScore: currentScore
+    pulseScore: currentScore,
+    isLastQuestion
   });
 
   return (

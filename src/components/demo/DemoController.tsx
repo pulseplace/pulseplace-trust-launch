@@ -39,8 +39,6 @@ const DemoController = () => {
         return <DemoSurvey />;
       case DemoStage.ANALYSIS:
         return <DemoAnalysis />;
-      case DemoStage.PULSEBOT:
-        return <DemoPulseBot />;
       case DemoStage.RESULTS:
         return <DemoResults />;
       case DemoStage.CERTIFICATION:
@@ -49,6 +47,8 @@ const DemoController = () => {
         return <DemoDashboard />;
       case DemoStage.SHARING:
         return <DemoSharing />;
+      case DemoStage.PULSEBOT:
+        return <DemoPulseBot />;
       default:
         return <DemoWelcome />;
     }

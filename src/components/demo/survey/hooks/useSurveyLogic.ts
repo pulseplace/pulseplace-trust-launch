@@ -28,7 +28,7 @@ export const useSurveyLogic = () => {
     if (isComplete) {
       setIsProcessing(true);
       const timer = setTimeout(() => {
-        nextStage();
+        nextStage(); // This advances to the next stage in the demo flow
       }, 2000);
       return () => clearTimeout(timer);
     }
@@ -49,8 +49,7 @@ export const useSurveyLogic = () => {
       setCurrentQuestion(currentQuestion + 1);
       setShowInsight(false);
     } else {
-      // This is the fix - properly handle completion of the survey
-      completeDemo();
+      completeDemo(); // This function completes the survey
     }
   };
 
