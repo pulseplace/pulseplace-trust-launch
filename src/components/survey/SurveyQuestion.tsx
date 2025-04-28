@@ -2,7 +2,7 @@
 import React from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { InfoCircledIcon } from "@radix-ui/react-icons";
+import { Info } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -71,7 +71,7 @@ const SurveyQuestion: React.FC<QuestionProps> = ({
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <div className="cursor-help">
-                      <InfoCircledIcon className="h-4 w-4 text-gray-500" />
+                      <Info className="h-4 w-4 text-gray-500" />
                     </div>
                   </TooltipTrigger>
                   <TooltipContent className="max-w-xs">
@@ -83,6 +83,7 @@ const SurveyQuestion: React.FC<QuestionProps> = ({
           </div>
         )}
       </div>
+
       <RadioGroup
         value={value?.toString()}
         onValueChange={(val) => onChange(parseInt(val))}
