@@ -1,9 +1,16 @@
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Play } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useDemo } from "@/contexts/DemoContext";
 
 const Hero = () => {
+  const { startDemo } = useDemo();
+
+  const handleDemoClick = () => {
+    startDemo();
+  };
+
   return (
     <section className="relative py-20 overflow-hidden bg-gradient-to-b from-white via-pulse-gray/5 to-white">
       <div className="container px-4 md:px-6">
@@ -27,15 +34,15 @@ const Hero = () => {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </Link>
-              <a href="#how-it-works">
-                <Button 
-                  size="lg" 
-                  variant="outline" 
-                  className="border-pulse-blue text-pulse-blue hover:bg-pulse-blue/5"
-                >
-                  See How It Works
-                </Button>
-              </a>
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-pulse-blue text-pulse-blue hover:bg-pulse-blue/5"
+                onClick={handleDemoClick}
+              >
+                <Play className="mr-2 h-4 w-4" />
+                Try AI Demo
+              </Button>
             </div>
           </div>
           <div className="flex-1 w-full max-w-2xl">
