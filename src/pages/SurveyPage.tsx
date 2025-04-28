@@ -1,14 +1,8 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import SurveyQuestion from "@/components/survey/SurveyQuestion";
-import SurveyProgress from "@/components/survey/SurveyProgress";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "@/components/ui/use-toast";
+import OrganizationDetailsForm from "@/components/survey/OrganizationDetailsForm";
+import SurveySection from "@/components/survey/SurveySection";
 
 const questions = [
   {
@@ -118,10 +112,16 @@ const SurveyPage = () => {
     }
   };
 
+  const handleSkip = () => {
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+      window.scrollTo(0, 0);
+    } else {
+      handleSubmit();
+    }
+  };
+
   const handleSubmit = () => {
-    // In a real app, we would send the survey data to a backend
-    // For now, we'll just simulate a submission and navigate to the thank you page
-    
     // Calculate PulseScore
     const validAnswers = answers.filter((answer) => answer !== null) as number[];
     const averageScore = validAnswers.reduce((sum, answer) => sum + answer, 0) / validAnswers.length;
@@ -138,144 +138,35 @@ const SurveyPage = () => {
     });
   };
 
-  const handleSkipQuestion = () => {
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-      window.scrollTo(0, 0);
-    } else {
-      handleSubmit();
-    }
+  const startSurvey = () => {
+    setCurrentQuestion(0);
   };
 
-  // Show organization details input form at the start
+  // Show organization details form at the start
   if (currentQuestion === 0 && organizationName === "") {
     return (
-      <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 flex flex-col justify-center">
-        <div className="max-w-md mx-auto w-full">
-          <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-pulse-blue">PulsePlace.ai</h1>
-            <h2 className="mt-3 text-xl font-semibold">Get Started with Your Trust Assessment</h2>
-            <p className="mt-2 text-gray-500">
-              Tell us a bit about your organization to begin.
-            </p>
-          </div>
-          
-          <Card>
-            <CardContent className="pt-6">
-              <form className="space-y-6">
-                <div className="space-y-2">
-                  <Label htmlFor="organization-name">Organization Name</Label>
-                  <Input
-                    id="organization-name"
-                    placeholder="Enter your organization name"
-                    value={organizationName}
-                    onChange={(e) => setOrganizationName(e.target.value)}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="organization-size">Organization Size</Label>
-                  <Input
-                    id="organization-size"
-                    placeholder="Number of employees"
-                    value={organizationSize}
-                    onChange={(e) => setOrganizationSize(e.target.value)}
-                  />
-                </div>
-                
-                <div className="space-y-2">
-                  <Label htmlFor="email">Your Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="Email to receive results"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </div>
-                
-                <Button 
-                  type="button" 
-                  className="w-full bg-pulse-blue hover:bg-pulse-blue/90"
-                  onClick={handleNext}
-                  disabled={!organizationName || !email}
-                >
-                  Start Assessment
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-        </div>
-      </div>
+      <OrganizationDetailsForm
+        organizationName={organizationName}
+        organizationSize={organizationSize}
+        email={email}
+        onOrganizationNameChange={setOrganizationName}
+        onOrganizationSizeChange={setOrganizationSize}
+        onEmailChange={setEmail}
+        onSubmit={startSurvey}
+      />
     );
   }
 
-  const question = questions[currentQuestion];
-
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 flex flex-col">
-      <div className="max-w-3xl mx-auto w-full">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-pulse-blue">PulsePlace.ai Assessment</h1>
-          <p className="mt-2 text-gray-500">
-            Help us understand your workplace culture and trust framework.
-          </p>
-        </div>
-
-        <Card className="mb-6">
-          <CardContent className="pt-6">
-            <SurveyProgress 
-              currentQuestion={currentQuestion + 1} 
-              totalQuestions={questions.length} 
-            />
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="pt-6">
-            <SurveyQuestion
-              id={question.id}
-              question={question.question}
-              options={question.options}
-              value={answers[currentQuestion]}
-              onChange={handleAnswerChange}
-            />
-            
-            <div className="mt-8 flex justify-between">
-              <div>
-                {currentQuestion > 0 && (
-                  <Button variant="outline" onClick={handleBack}>
-                    <ChevronLeft className="mr-2 h-4 w-4" />
-                    Back
-                  </Button>
-                )}
-              </div>
-              
-              <div className="flex space-x-3">
-                <Button variant="ghost" onClick={handleSkipQuestion}>
-                  Skip
-                </Button>
-                
-                <Button 
-                  onClick={handleNext}
-                  disabled={answers[currentQuestion] === null}
-                  className="bg-pulse-blue hover:bg-pulse-blue/90"
-                >
-                  {currentQuestion < questions.length - 1 ? (
-                    <>
-                      Next
-                      <ChevronRight className="ml-2 h-4 w-4" />
-                    </>
-                  ) : (
-                    "Submit"
-                  )}
-                </Button>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+    <SurveySection
+      currentQuestion={currentQuestion}
+      questions={questions}
+      answers={answers}
+      onAnswerChange={handleAnswerChange}
+      onNext={handleNext}
+      onBack={handleBack}
+      onSkip={handleSkip}
+    />
   );
 };
 
