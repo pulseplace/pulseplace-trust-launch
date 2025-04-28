@@ -25,7 +25,7 @@ const DemoSurvey = () => {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<(number | null)[]>(Array(questions.length).fill(null));
   const [showInsight, setShowInsight] = useState(false);
-  const [isDemoComplete, setIsDemoComplete] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
   const [scoreAnalysis, setScoreAnalysis] = useState<any>(null);
 
   useEffect(() => {
@@ -53,6 +53,18 @@ const DemoSurvey = () => {
     }
   }, [answers, setPulseScore, setPulseScoreDetails]);
 
+  // Effect to proceed to next stage when survey is completed
+  useEffect(() => {
+    if (isComplete) {
+      // Add a small delay for a smoother transition
+      const timer = setTimeout(() => {
+        nextStage();
+      }, 500);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [isComplete, nextStage]);
+
   const handleAnswerChange = (value: number) => {
     const newAnswers = [...answers];
     newAnswers[currentQuestion] = value;
@@ -79,7 +91,7 @@ const DemoSurvey = () => {
   };
 
   const completeDemo = () => {
-    setIsDemoComplete(true);
+    setIsComplete(true);
   };
 
   const isLastQuestion = currentQuestion === questions.length - 1;
@@ -208,14 +220,31 @@ const DemoSurvey = () => {
         <SurveyExplanation />
       </div>
       
-      <DemoNavigation 
-        showBackButton={currentQuestion > 0}
-        showNextButton={answers[currentQuestion] !== null}
-        nextLabel={isLastQuestion ? "Continue to Analysis" : "Next Question"}
-        backLabel="Previous Question"
-        onNextClick={handleNextQuestion}
-        onBackClick={handlePreviousQuestion}
-      />
+      {!isComplete && (
+        <DemoNavigation 
+          showBackButton={currentQuestion > 0}
+          showNextButton={answers[currentQuestion] !== null}
+          nextLabel={isLastQuestion ? "Complete Survey" : "Next Question"}
+          backLabel="Previous Question"
+          onNextClick={handleNextQuestion}
+          onBackClick={handlePreviousQuestion}
+        />
+      )}
+      
+      {isComplete && (
+        <motion.div 
+          initial={{ opacity: 0 }} 
+          animate={{ opacity: 1 }} 
+          className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg z-50 p-4"
+        >
+          <div className="container flex justify-center">
+            <div className="flex items-center">
+              <span className="text-pulse-blue font-medium mr-2">Processing your responses...</span>
+              <div className="h-5 w-5 border-2 border-t-pulse-blue border-r-pulse-blue rounded-full animate-spin"></div>
+            </div>
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 };
