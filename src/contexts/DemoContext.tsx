@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
 // Demo stages to track progress
@@ -7,6 +6,7 @@ export enum DemoStage {
   ASSESSMENT_SETUP = "assessment_setup",
   SURVEY = "survey",
   ANALYSIS = "analysis",
+  PULSEBOT = "pulsebot",
   RESULTS = "results",
   CERTIFICATION = "certification",
   DASHBOARD = "dashboard",

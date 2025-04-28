@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDemo, DemoStage } from "@/contexts/DemoContext";
@@ -10,12 +9,12 @@ import DemoResults from "./stages/DemoResults";
 import DemoCertification from "./stages/DemoCertification";
 import DemoDashboard from "./stages/DemoDashboard";
 import DemoSharing from "./stages/DemoSharing";
+import DemoPulseBot from "./stages/DemoPulseBot";
 
 const DemoController = () => {
   const { isDemoActive, currentStage } = useDemo();
   const navigate = useNavigate();
 
-  // Redirect back to landing page if demo is not active
   useEffect(() => {
     if (!isDemoActive) {
       navigate("/");
@@ -24,7 +23,6 @@ const DemoController = () => {
 
   if (!isDemoActive) return null;
 
-  // Render the appropriate component based on current stage
   const renderStageContent = () => {
     switch (currentStage) {
       case DemoStage.WELCOME:
@@ -35,6 +33,8 @@ const DemoController = () => {
         return <DemoSurvey />;
       case DemoStage.ANALYSIS:
         return <DemoAnalysis />;
+      case DemoStage.PULSEBOT:
+        return <DemoPulseBot />;
       case DemoStage.RESULTS:
         return <DemoResults />;
       case DemoStage.CERTIFICATION:
