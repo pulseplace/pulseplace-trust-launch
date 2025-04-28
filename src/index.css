@@ -82,6 +82,48 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold tracking-tight text-pulse-navy;
+  }
+}
+
+@layer components {
+  .gradient-text {
+    @apply bg-gradient-to-br from-pulse-blue via-pulse-coral to-pulse-navy bg-clip-text text-transparent;
+  }
+
+  .feature-card {
+    @apply relative p-6 rounded-xl border bg-white transition-all duration-300
+           hover:shadow-lg hover:scale-[1.02] hover:border-pulse-blue/20;
+  }
+
+  .feature-card::before {
+    content: '';
+    @apply absolute inset-0 bg-gradient-to-br from-pulse-blue/5 via-pulse-coral/5 to-transparent 
+           rounded-xl opacity-0 transition-opacity duration-300;
+  }
+
+  .feature-card:hover::before {
+    @apply opacity-100;
+  }
+
+  .section-padding {
+    @apply py-24 px-6 md:px-12 lg:px-24;
+  }
+
+  .trust-gradient {
+    @apply bg-gradient-to-br from-pulse-blue via-pulse-coral to-pulse-navy;
+  }
 }
 
 @layer base {
