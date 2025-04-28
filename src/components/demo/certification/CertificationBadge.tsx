@@ -1,7 +1,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Award, Check } from "lucide-react";
+import { Award, Check, ShieldCheck } from "lucide-react";
 
 interface CertificationBadgeProps {
   pulseScore: number;
@@ -92,7 +92,7 @@ const CertificationBadge: React.FC<CertificationBadgeProps> = ({
         </div>
         
         <div className="mt-8 border-t pt-4 w-full text-center flex items-center justify-center">
-          <Shield className="h-4 w-4 text-pulse-blue mr-1" />
+          <ShieldCheck className="h-4 w-4 text-pulse-blue mr-1" />
           <div>
             <div className="text-xs text-gray-500">
               Verified by

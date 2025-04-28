@@ -1,13 +1,10 @@
 
 import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useDemo } from "@/contexts/DemoContext";
 import DemoNavigation from "../DemoNavigation";
-import AIProcessing from "../AIProcessing";
 import CertificationHeader from "../certification/CertificationHeader";
-import CertificationBadge from "../certification/CertificationBadge";
-import CertificationExplanation from "../certification/CertificationExplanation";
+import CertificationProcessing from "../certification/CertificationProcessing";
+import CertificationContent from "../certification/CertificationContent";
 
 const DemoCertification = () => {
   const { pulseScore, organizationName } = useDemo();
@@ -43,36 +40,14 @@ const DemoCertification = () => {
         <CertificationHeader />
 
         {isGenerating ? (
-          <Card>
-            <CardContent className="py-8">
-              <AIProcessing 
-                message="AI is verifying certification criteria..." 
-                type="generating"
-              />
-            </CardContent>
-          </Card>
+          <CertificationProcessing />
         ) : (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Card>
-              <CardHeader>
-                <CardTitle>Your PulsePlace Certification</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CertificationBadge 
-                  pulseScore={pulseScore}
-                  organizationName={organizationName}
-                  certificationDate={certificationDate}
-                  expirationDate={expirationDate}
-                />
-                
-                <CertificationExplanation />
-              </CardContent>
-            </Card>
-          </motion.div>
+          <CertificationContent
+            pulseScore={pulseScore}
+            organizationName={organizationName}
+            certificationDate={certificationDate}
+            expirationDate={expirationDate}
+          />
         )}
       </div>
       
