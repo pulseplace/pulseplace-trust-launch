@@ -1,59 +1,111 @@
 
 import { describe, it, expect } from 'vitest';
-import { calculateCategoryScores, initializeCategoryTotals } from '../categoryScores';
+import { calculateCategoryScores } from '../categoryScores';
 import { SurveyQuestion } from '../../types';
 
-describe('categoryScores', () => {
-  describe('initializeCategoryTotals', () => {
-    it('initializes category totals with correct structure', () => {
-      const result = initializeCategoryTotals();
-      expect(result).toEqual({
-        trust: { sum: 0, count: 0, weightSum: 0 },
-        engagement: { sum: 0, count: 0, weightSum: 0 },
-        wellbeing: { sum: 0, count: 0, weightSum: 0 }
-      });
-    });
+describe('calculateCategoryScores', () => {
+  it('calculates scores for each category correctly', () => {
+    const mockValidAnswers = [
+      {
+        value: 5,
+        question: {
+          id: '1',
+          question: 'Trust Question 1',
+          options: [],
+          category: 'trust',
+          weight: 1,
+          aiInsight: {
+            title: 'Test Insight',
+            description: 'Description',
+            confidence: 80,
+            source: 'Internal data'
+          }
+        } as SurveyQuestion
+      },
+      {
+        value: 4,
+        question: {
+          id: '2',
+          question: 'Trust Question 2',
+          options: [],
+          category: 'trust',
+          weight: 1.5,
+          aiInsight: {
+            title: 'Test Insight',
+            description: 'Description',
+            confidence: 80,
+            source: 'Internal data'
+          }
+        } as SurveyQuestion
+      },
+      {
+        value: 3,
+        question: {
+          id: '3',
+          question: 'Engagement Question',
+          options: [],
+          category: 'engagement',
+          weight: 1,
+          aiInsight: {
+            title: 'Test Insight',
+            description: 'Description',
+            confidence: 80,
+            source: 'Internal data'
+          }
+        } as SurveyQuestion
+      },
+      {
+        value: 2,
+        question: {
+          id: '4',
+          question: 'Wellbeing Question',
+          options: [],
+          category: 'wellbeing',
+          weight: 1,
+          aiInsight: {
+            title: 'Test Insight',
+            description: 'Description',
+            confidence: 80,
+            source: 'Internal data'
+          }
+        } as SurveyQuestion
+      }
+    ];
+
+    const result = calculateCategoryScores(mockValidAnswers);
+    
+    // Trust: ((5*1) + (4*1.5)) / (1 + 1.5) = 4.4
+    expect(result.trust).toBeCloseTo(4.4);
+    // Engagement: 3 (single value)
+    expect(result.engagement).toBe(3);
+    // Wellbeing: 2 (single value)
+    expect(result.wellbeing).toBe(2);
   });
 
-  describe('calculateCategoryScores', () => {
-    it('calculates weighted scores correctly for each category', () => {
-      const mockAnswers = [
-        {
-          value: 4,
-          question: {
-            id: '1',
-            question: 'Q1',
-            options: [],
-            category: 'trust',
-            weight: 2
+  it('handles empty or missing categories', () => {
+    const mockValidAnswers = [
+      {
+        value: 5,
+        question: {
+          id: '1',
+          question: 'Trust Question',
+          options: [],
+          category: 'trust',
+          weight: 1,
+          aiInsight: {
+            title: 'Test Insight',
+            description: 'Description',
+            confidence: 80,
+            source: 'Internal data'
           }
-        },
-        {
-          value: 5,
-          question: {
-            id: '2',
-            question: 'Q2',
-            options: [],
-            category: 'engagement',
-            weight: 1
-          }
-        }
-      ];
+        } as SurveyQuestion
+      }
+    ];
 
-      const result = calculateCategoryScores(mockAnswers);
-      expect(result.trust).toBe(80); // (4 * 2 / 2) * 20 = 80
-      expect(result.engagement).toBe(100); // (5 * 1 / 1) * 20 = 100
-      expect(result.wellbeing).toBe(0); // No wellbeing answers
-    });
-
-    it('returns 0 for categories with no answers', () => {
-      const mockAnswers: { value: number; question: SurveyQuestion }[] = [];
-      const result = calculateCategoryScores(mockAnswers);
-      
-      expect(result.trust).toBe(0);
-      expect(result.engagement).toBe(0);
-      expect(result.wellbeing).toBe(0);
-    });
+    const result = calculateCategoryScores(mockValidAnswers);
+    
+    expect(result.trust).toBe(5);
+    expect(result.engagement).toBe(0);
+    expect(result.wellbeing).toBe(0);
   });
 });
-

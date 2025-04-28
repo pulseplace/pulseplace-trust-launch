@@ -7,10 +7,62 @@ describe('calculateBenchmarkComparison', () => {
   it('calculates correct benchmark difference', () => {
     const mockAnswers = [4, 5, null, 3];
     const mockQuestions: SurveyQuestion[] = [
-      { id: '1', question: 'Q1', options: [], category: 'trust', weight: 1, benchmarkScore: 3 },
-      { id: '2', question: 'Q2', options: [], category: 'trust', weight: 1, benchmarkScore: 4 },
-      { id: '3', question: 'Q3', options: [], category: 'trust', weight: 1, benchmarkScore: 3 },
-      { id: '4', question: 'Q4', options: [], category: 'trust', weight: 1, benchmarkScore: 4 }
+      { 
+        id: '1', 
+        question: 'Q1', 
+        options: [], 
+        category: 'trust', 
+        weight: 1, 
+        benchmarkScore: 3,
+        aiInsight: {
+          title: 'Test Insight',
+          description: 'Description',
+          confidence: 80,
+          source: 'Internal data'
+        }
+      },
+      { 
+        id: '2', 
+        question: 'Q2', 
+        options: [], 
+        category: 'trust', 
+        weight: 1, 
+        benchmarkScore: 4,
+        aiInsight: {
+          title: 'Test Insight',
+          description: 'Description',
+          confidence: 80,
+          source: 'Internal data'
+        }
+      },
+      { 
+        id: '3', 
+        question: 'Q3', 
+        options: [], 
+        category: 'trust', 
+        weight: 1, 
+        benchmarkScore: 3,
+        aiInsight: {
+          title: 'Test Insight',
+          description: 'Description',
+          confidence: 80,
+          source: 'Internal data'
+        }
+      },
+      { 
+        id: '4', 
+        question: 'Q4', 
+        options: [], 
+        category: 'trust', 
+        weight: 1, 
+        benchmarkScore: 4,
+        aiInsight: {
+          title: 'Test Insight',
+          description: 'Description',
+          confidence: 80,
+          source: 'Internal data'
+        }
+      }
     ];
 
     const result = calculateBenchmarkComparison(mockAnswers, mockQuestions);
@@ -20,12 +72,37 @@ describe('calculateBenchmarkComparison', () => {
   it('returns 0 when no valid answers', () => {
     const mockAnswers = [null, null];
     const mockQuestions: SurveyQuestion[] = [
-      { id: '1', question: 'Q1', options: [], category: 'trust', weight: 1, benchmarkScore: 3 },
-      { id: '2', question: 'Q2', options: [], category: 'trust', weight: 1, benchmarkScore: 4 }
+      { 
+        id: '1', 
+        question: 'Q1', 
+        options: [], 
+        category: 'trust', 
+        weight: 1, 
+        benchmarkScore: 3,
+        aiInsight: {
+          title: 'Test Insight',
+          description: 'Description',
+          confidence: 80,
+          source: 'Internal data'
+        }
+      },
+      { 
+        id: '2', 
+        question: 'Q2', 
+        options: [], 
+        category: 'trust', 
+        weight: 1, 
+        benchmarkScore: 4,
+        aiInsight: {
+          title: 'Test Insight',
+          description: 'Description',
+          confidence: 80,
+          source: 'Internal data'
+        }
+      }
     ];
 
     const result = calculateBenchmarkComparison(mockAnswers, mockQuestions);
     expect(result).toBe(0);
   });
 });
-

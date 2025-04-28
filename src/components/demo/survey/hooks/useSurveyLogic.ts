@@ -49,6 +49,7 @@ export const useSurveyLogic = () => {
       setCurrentQuestion(currentQuestion + 1);
       setShowInsight(false);
     } else {
+      // This is the fix - properly handle completion of the survey
       completeDemo();
     }
   };
@@ -60,6 +61,13 @@ export const useSurveyLogic = () => {
   };
 
   const completeDemo = () => {
+    // Show a success toast
+    toast({
+      title: "Survey Complete!",
+      description: "Preparing your PulseScore™ analysis...",
+      duration: 2000,
+    });
+    
     setIsComplete(true);
   };
 

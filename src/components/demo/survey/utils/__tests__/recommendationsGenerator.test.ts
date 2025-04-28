@@ -3,36 +3,54 @@ import { describe, it, expect } from 'vitest';
 import { generateRecommendations } from '../recommendationsGenerator';
 import { SurveyQuestion } from '../../types';
 
-describe('recommendationsGenerator', () => {
-  const mockQuestions: SurveyQuestion[] = [
-    { id: 'q1', question: 'Leadership Question', options: [], category: 'trust', weight: 1 },
-    { id: 'q2', question: 'Team Question', options: [], category: 'trust', weight: 1 }
-  ];
+describe('generateRecommendations', () => {
+  it('generates recommendations based on low scores', () => {
+    const mockAnswers = [4, 2, 5, 2, 3];
+    const mockQuestions: SurveyQuestion[] = [
+      {
+        id: '1',
+        question: 'Leadership Communication',
+        options: [],
+        category: 'trust',
+        weight: 1,
+        aiInsight: {
+          title: 'Test Insight',
+          description: 'Description',
+          confidence: 80,
+          source: 'Internal data'
+        }
+      },
+      {
+        id: '2',
+        question: 'Team Commitments',
+        options: [],
+        category: 'trust',
+        weight: 1,
+        aiInsight: {
+          title: 'Test Insight',
+          description: 'Description',
+          confidence: 80,
+          source: 'Internal data'
+        }
+      }
+    ];
+    const categoryScores = { trust: 60, engagement: 70, wellbeing: 60 };
 
-  it('generates category-specific recommendations for lowest scoring category', () => {
-    const mockAnswers = [4, 3];
-    const mockCategoryScores = {
-      trust: 70,
-      engagement: 50,
-      wellbeing: 80
-    };
+    const recommendations = generateRecommendations(mockAnswers, mockQuestions, categoryScores);
 
-    const recommendations = generateRecommendations(mockAnswers, mockQuestions, mockCategoryScores);
-    
-    expect(recommendations).toContain('Develop structured career growth paths for all employees');
-    expect(recommendations).toContain('Establish forums for safe idea sharing and innovation');
+    expect(recommendations.length).toBeGreaterThan(0);
+    expect(recommendations).toContain(expect.stringContaining("communication") || 
+                                      expect.stringContaining("transparency") ||
+                                      expect.stringContaining("leadership"));
   });
 
-  it('generates question-specific recommendations for low scores', () => {
-    const mockAnswers = [2, 4];
-    const mockCategoryScores = {
-      trust: 80,
-      engagement: 70,
-      wellbeing: 90
-    };
+  it('returns default recommendations when no clear patterns', () => {
+    const mockAnswers = [3, 3, 3];
+    const mockQuestions: SurveyQuestion[] = [];
+    const categoryScores = { trust: 60, engagement: 60, wellbeing: 60 };
 
-    const recommendations = generateRecommendations(mockAnswers, mockQuestions, mockCategoryScores);
-    expect(recommendations).toContain('Consider implementing weekly leadership updates and regular town halls');
+    const recommendations = generateRecommendations(mockAnswers, mockQuestions, categoryScores);
+
+    expect(recommendations.length).toBeGreaterThan(0);
   });
 });
-

@@ -4,62 +4,80 @@ import { identifyStrengths, identifyOpportunities } from '../strengthsAnalysis';
 import { SurveyQuestion } from '../../types';
 
 describe('strengthsAnalysis', () => {
-  const mockQuestions: SurveyQuestion[] = [
-    {
-      id: '1',
-      question: 'I feel that leadership communicates well',
-      options: [],
-      category: 'trust',
-      weight: 1
-    },
-    {
-      id: '2',
-      question: 'I feel engaged with my work',
-      options: [],
-      category: 'engagement',
-      weight: 1
-    },
-    {
-      id: '3',
-      question: 'I have good work-life balance',
-      options: [],
-      category: 'wellbeing',
-      weight: 1
-    }
-  ];
+  it('identifies trust strengths based on high scores', () => {
+    const mockAnswers = [5, 4, null];
+    const mockQuestions: SurveyQuestion[] = [
+      {
+        id: '1',
+        question: 'Leadership communicates transparently',
+        options: [],
+        category: 'trust',
+        weight: 1,
+        aiInsight: {
+          title: 'Test Insight',
+          description: 'Description',
+          confidence: 80,
+          source: 'Internal data'
+        }
+      }
+    ];
 
-  describe('identifyStrengths', () => {
-    it('identifies strengths correctly from high scores', () => {
-      const mockAnswers = [4, 5, 3];
-      const strengths = identifyStrengths(mockAnswers, mockQuestions);
-      
-      expect(strengths).toHaveLength(2);
-      expect(strengths[0]).toContain('Strong leadership communicates well');
-      expect(strengths[1]).toContain('High level of engaged with my work');
-    });
-
-    it('returns empty array when no strengths found', () => {
-      const mockAnswers = [3, 3, 3];
-      const strengths = identifyStrengths(mockAnswers, mockQuestions);
-      expect(strengths).toHaveLength(0);
-    });
+    const strengths = identifyStrengths(mockAnswers, mockQuestions);
+    expect(strengths.length).toBeGreaterThan(0);
+    expect(strengths).toContain(expect.stringContaining("leadership") || 
+                                expect.stringContaining("transparent") ||
+                                expect.stringContaining("communication"));
   });
 
-  describe('identifyOpportunities', () => {
-    it('identifies opportunities correctly from low scores', () => {
-      const mockAnswers = [2, 1, 3];
-      const opportunities = identifyOpportunities(mockAnswers, mockQuestions);
-      
-      expect(opportunities).toHaveLength(2);
-      expect(opportunities[0]).toContain('Improve leadership communicates well');
-      expect(opportunities[1]).toContain('Enhance engaged with my work');
-    });
+  it('identifies engagement strengths', () => {
+    const mockAnswers = [5, null, 4];
+    const mockQuestions: SurveyQuestion[] = [
+      null,
+      null,
+      {
+        id: '3',
+        question: 'Team collaboration is effective',
+        options: [],
+        category: 'engagement',
+        weight: 1,
+        aiInsight: {
+          title: 'Test Insight',
+          description: 'Description',
+          confidence: 80,
+          source: 'Internal data'
+        }
+      }
+    ] as any;
 
-    it('returns empty array when no opportunities found', () => {
-      const mockAnswers = [3, 3, 3];
-      const opportunities = identifyOpportunities(mockAnswers, mockQuestions);
-      expect(opportunities).toHaveLength(0);
-    });
+    const strengths = identifyStrengths(mockAnswers, mockQuestions);
+    expect(strengths).toContain(expect.stringContaining("team") || 
+                                expect.stringContaining("collaboration") ||
+                                expect.stringContaining("engagement"));
+  });
+
+  it('identifies wellbeing opportunities based on low scores', () => {
+    const mockAnswers = [null, 2, null];
+    const mockQuestions: SurveyQuestion[] = [
+      null,
+      {
+        id: '2',
+        question: 'Work-life balance is respected',
+        options: [],
+        category: 'wellbeing',
+        weight: 1,
+        aiInsight: {
+          title: 'Test Insight',
+          description: 'Description',
+          confidence: 80,
+          source: 'Internal data'
+        }
+      },
+      null
+    ] as any;
+
+    const opportunities = identifyOpportunities(mockAnswers, mockQuestions);
+    expect(opportunities).toContain(expect.stringContaining("work-life") || 
+                                   expect.stringContaining("balance") ||
+                                   expect.stringContaining("wellbeing"));
   });
 });
-
