@@ -1,4 +1,5 @@
-import { Award, ChartBar, Shield, MessageSquare, Badge, Lock } from "lucide-react";
+
+import { Award, ChartBar, Shield, MessageSquare, Badge, Lock, BrainCircuit, LineChart } from "lucide-react";
 import type { Feature } from "./types";
 
 export const features: Feature[] = [
@@ -11,12 +12,13 @@ export const features: Feature[] = [
     demoTitle: "See Score Demo",
     demoDescription: "Experience how PulseScore breaks down complex workplace dynamics into actionable metrics.",
     actionLabel: "Calculate Your Score",
-    color: "from-pulse-blue/20 to-pulse-blue/10",
+    actionLink: "demo",
+    color: "from-blue-50 to-blue-100/50",
     hoverColor: "group-hover:bg-pulse-blue/20",
     iconColor: "text-pulse-blue",
     demo: {
       type: "image",
-      src: "/lovable-uploads/b55898f3-2485-4c4f-82c3-b6b92b4f34a5.png",
+      src: "/lovable-uploads/5816cf99-ba1f-4cd2-a127-b486b15c411d.png",
       caption: "Interactive PulseScore dashboard showing real-time trust metrics"
     }
   },
@@ -29,17 +31,18 @@ export const features: Feature[] = [
     demoTitle: "Preview Certification",
     demoDescription: "See how leading organizations leverage their Pulse Certification for competitive advantage.",
     actionLabel: "Get Certified",
-    color: "from-[#FEC6A1]/20 to-[#FEC6A1]/10",
+    actionLink: "demo",
+    color: "from-[#FDF2EC] to-[#FFF6F1]",
     hoverColor: "group-hover:bg-[#FEC6A1]/20",
     iconColor: "text-[#F97316]",
     demo: {
       type: "image",
-      src: "/lovable-uploads/b55898f3-2485-4c4f-82c3-b6b92b4f34a5.png",
+      src: "/lovable-uploads/9966b0a7-c74e-4b42-9cfc-01ae51f146e9.png",
       caption: "Interactive certification dashboard with trust metrics"
     }
   },
   {
-    icon: ChartBar,
+    icon: LineChart,
     title: "Real-Time Insights",
     subtitle: "Live Trust Analytics",
     description: "Monitor workplace culture health with real-time data visualization and early warning signals.",
@@ -47,12 +50,13 @@ export const features: Feature[] = [
     demoTitle: "View Live Demo",
     demoDescription: "Watch how our real-time analytics detect and predict cultural shifts before they impact performance.",
     actionLabel: "Explore Analytics",
-    color: "from-[#E5DEFF]/20 to-[#E5DEFF]/10",
+    actionLink: "demo",
+    color: "from-[#F5F3FF]/80 to-[#EBE8FD]",
     hoverColor: "group-hover:bg-[#E5DEFF]/20",
     iconColor: "text-[#8B5CF6]",
     demo: {
       type: "image",
-      src: "/lovable-uploads/b55898f3-2485-4c4f-82c3-b6b92b4f34a5.png",
+      src: "/lovable-uploads/1046046e-7ab8-48ff-9ece-2e6e87659feb.png",
       caption: "Live dashboard showing real-time culture analytics"
     }
   },
@@ -65,12 +69,13 @@ export const features: Feature[] = [
     demoTitle: "Compare Metrics",
     demoDescription: "Interactive tool to benchmark your organization against industry standards.",
     actionLabel: "Start Comparing",
-    color: "from-[#D3E4FD]/20 to-[#D3E4FD]/10",
+    actionLink: "demo",
+    color: "from-[#EFF8FF] to-[#F5FAFF]",
     hoverColor: "group-hover:bg-[#D3E4FD]/20",
     iconColor: "text-[#0EA5E9]",
     demo: {
       type: "image",
-      src: "/lovable-uploads/b55898f3-2485-4c4f-82c3-b6b92b4f34a5.png",
+      src: "/lovable-uploads/03f40ec7-9d5e-4653-93c9-5f9f81f18917.png",
       caption: "Interactive benchmarking tool showing industry comparisons"
     }
   },
@@ -83,12 +88,13 @@ export const features: Feature[] = [
     demoTitle: "Chat with PulseBot",
     demoDescription: "Experience how PulseBot helps identify and address culture challenges.",
     actionLabel: "Try PulseBot",
-    color: "from-[#FEF7CD]/20 to-[#FEF7CD]/10",
+    actionLink: "demo",
+    color: "from-[#FFFCE8] to-[#FFFEF5]",
     hoverColor: "group-hover:bg-[#FEF7CD]/20",
     iconColor: "text-[#EAB308]",
     demo: {
       type: "image",
-      src: "/lovable-uploads/b55898f3-2485-4c4f-82c3-b6b92b4f34a5.png",
+      src: "/lovable-uploads/9e145159-29da-4f38-8b3c-3536b72a242e.png",
       caption: "Live PulseBot interaction demonstrating cultural insights"
     }
   },
@@ -101,12 +107,13 @@ export const features: Feature[] = [
     demoTitle: "Security Demo",
     demoDescription: "See how we protect sensitive cultural data while maintaining actionable insights.",
     actionLabel: "Learn About Security",
-    color: "from-[#FFDEE2]/20 to-[#FFDEE2]/10",
+    actionLink: "demo",
+    color: "from-[#FFF1F3] to-[#FFF7F8]",
     hoverColor: "group-hover:bg-[#FFDEE2]/20",
     iconColor: "text-[#F43F5E]",
     demo: {
       type: "image",
-      src: "/lovable-uploads/b55898f3-2485-4c4f-82c3-b6b92b4f34a5.png",
+      src: "/lovable-uploads/9e145159-29da-4f38-8b3c-3536b72a242e.png",
       caption: "Security architecture and privacy protection demonstration"
     }
   }

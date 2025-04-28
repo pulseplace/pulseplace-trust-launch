@@ -1,8 +1,8 @@
 
 import { LucideIcon } from "lucide-react";
 
-export interface FeatureDemo {
-  type: 'image';
+export interface DemoContent {
+  type: string;
   src: string;
   caption: string;
 }
@@ -16,8 +16,9 @@ export interface Feature {
   demoTitle: string;
   demoDescription: string;
   actionLabel: string;
+  actionLink?: string;
   color: string;
   hoverColor: string;
   iconColor: string;
-  demo: FeatureDemo;
+  demo: DemoContent;
 }
