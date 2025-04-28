@@ -10,11 +10,14 @@ import { questions } from "../survey/surveyQuestions";
 import SurveyQuestion from "@/components/survey/SurveyQuestion";
 import ResponseFeedback from "../survey/ResponseFeedback";
 import SurveyExplanation from "../survey/SurveyExplanation";
+import { useDemo } from "@/contexts/DemoContext";
 
 const DemoSurvey = () => {
+  const { nextStage } = useDemo();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<(number | null)[]>(Array(questions.length).fill(null));
   const [showInsight, setShowInsight] = useState(false);
+  const [isDemoComplete, setIsDemoComplete] = useState(false);
 
   useEffect(() => {
     setShowInsight(false);
@@ -35,6 +38,21 @@ const DemoSurvey = () => {
     setTimeout(() => {
       setShowInsight(true);
     }, 500);
+  };
+
+  const handleNextQuestion = () => {
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+      setShowInsight(false);
+    } else {
+      setIsDemoComplete(true);
+    }
+  };
+
+  const handlePreviousQuestion = () => {
+    if (currentQuestion > 0) {
+      setCurrentQuestion(currentQuestion - 1);
+    }
   };
 
   const progressPercentage = ((currentQuestion + 1) / questions.length) * 100;
@@ -113,9 +131,13 @@ const DemoSurvey = () => {
         <SurveyExplanation />
       </div>
       
-      <DemoNavigation
+      <DemoNavigation 
         showBackButton={currentQuestion > 0}
         showNextButton={answers[currentQuestion] !== null}
+        nextLabel={currentQuestion === questions.length - 1 && isDemoComplete ? "Continue to Analysis" : "Next Question"}
+        backLabel="Previous Question"
+        onNextClick={isDemoComplete ? nextStage : handleNextQuestion}
+        onBackClick={handlePreviousQuestion}
       />
     </div>
   );

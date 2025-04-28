@@ -10,6 +10,8 @@ interface DemoNavigationProps {
   showBackButton?: boolean;
   nextLabel?: string;
   backLabel?: string;
+  onNextClick?: () => void;
+  onBackClick?: () => void;
 }
 
 const DemoNavigation = ({
@@ -17,8 +19,26 @@ const DemoNavigation = ({
   showBackButton = true,
   nextLabel = "Next",
   backLabel = "Back",
+  onNextClick,
+  onBackClick,
 }: DemoNavigationProps) => {
   const { exitDemo, nextStage, previousStage, progressPercentage, currentStage } = useDemo();
+
+  const handleNextClick = () => {
+    if (onNextClick) {
+      onNextClick();
+    } else {
+      nextStage();
+    }
+  };
+
+  const handleBackClick = () => {
+    if (onBackClick) {
+      onBackClick();
+    } else {
+      previousStage();
+    }
+  };
 
   const getStageName = (stage: DemoStage): string => {
     switch (stage) {
@@ -38,6 +58,8 @@ const DemoNavigation = ({
         return "Dashboard";
       case DemoStage.SHARING:
         return "Sharing";
+      case DemoStage.PULSEBOT:
+        return "PulseBot";
       default:
         return "";
     }
@@ -68,7 +90,7 @@ const DemoNavigation = ({
               <Button
                 variant="outline"
                 size="sm"
-                onClick={previousStage}
+                onClick={handleBackClick}
                 className="text-gray-700"
               >
                 <ChevronLeft className="h-4 w-4 mr-1" /> {backLabel}
@@ -80,7 +102,7 @@ const DemoNavigation = ({
             {showNextButton && (
               <Button
                 size="sm"
-                onClick={nextStage}
+                onClick={handleNextClick}
                 className="bg-pulse-blue hover:bg-pulse-blue/90"
               >
                 {nextLabel} <ChevronRight className="h-4 w-4 ml-1" />
