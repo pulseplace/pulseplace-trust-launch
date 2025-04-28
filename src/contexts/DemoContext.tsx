@@ -7,10 +7,10 @@ export enum DemoStage {
   ASSESSMENT_SETUP = "assessment_setup",
   SURVEY = "survey",
   ANALYSIS = "analysis",
-  PULSEBOT = "pulsebot",
   RESULTS = "results",
   CERTIFICATION = "certification",
   DASHBOARD = "dashboard",
+  PULSEBOT = "pulsebot", // Positioned before SHARING
   SHARING = "sharing",
 }
 

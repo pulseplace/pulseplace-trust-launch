@@ -11,9 +11,10 @@ import DemoCertification from "./stages/DemoCertification";
 import DemoDashboard from "./stages/DemoDashboard";
 import DemoSharing from "./stages/DemoSharing";
 import DemoPulseBot from "./stages/DemoPulseBot";
+import { FloatingPulseBotButton } from "./pulsebot/FloatingPulseBotButton";
 
 const DemoController = () => {
-  const { isDemoActive, currentStage } = useDemo();
+  const { isDemoActive, currentStage, setStage } = useDemo();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,6 +29,13 @@ const DemoController = () => {
   }, [currentStage]);
 
   if (!isDemoActive) return null;
+
+  // Only show PulseBot button when not already on the PulseBot stage
+  const showPulseBotButton = currentStage !== DemoStage.PULSEBOT;
+
+  const handlePulseBotClick = () => {
+    setStage(DemoStage.PULSEBOT);
+  };
 
   const renderStageContent = () => {
     switch (currentStage) {
@@ -54,7 +62,12 @@ const DemoController = () => {
     }
   };
 
-  return <div className="min-h-screen bg-gray-50 pb-20">{renderStageContent()}</div>;
+  return (
+    <div className="min-h-screen bg-gray-50 pb-20">
+      {renderStageContent()}
+      {showPulseBotButton && <FloatingPulseBotButton onClick={handlePulseBotClick} />}
+    </div>
+  );
 };
 
 export default DemoController;

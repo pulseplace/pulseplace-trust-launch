@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { Bot } from "lucide-react";
 import ChatInterface from "@/components/pulsebot/ChatInterface";
@@ -8,14 +8,41 @@ import InsightsPanel from "@/components/pulsebot/InsightsPanel";
 import DemoNavigation from "../DemoNavigation";
 import { usePulseBotChat } from "../pulsebot/hooks/usePulseBotChat";
 import { suggestedTopics } from "../pulsebot/data/suggestedTopics";
+import { useDemo } from "@/contexts/DemoContext";
+import { toast } from "@/hooks/use-toast";
 
 const DemoPulseBot = () => {
   const { messages, isLoading, handleSendMessage, handleClearChat } = usePulseBotChat();
+  const { organizationName } = useDemo();
+
+  // Show welcome toast when component mounts
+  useEffect(() => {
+    toast({
+      title: "Welcome to PulseBot",
+      description: "Your AI workplace culture assistant is ready to help",
+      duration: 5000,
+    });
+  }, []);
+
+  // Auto-send a welcome message if the messages array is empty or only has the initial bot message
+  useEffect(() => {
+    if (messages.length <= 1) {
+      const timer = setTimeout(() => {
+        handleSendMessage(`Tell me about ${organizationName}'s workplace culture strengths and opportunities.`);
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [messages, handleSendMessage, organizationName]);
 
   return (
     <div className="container px-4 py-12 mx-auto">
       <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-8">
+        <motion.div 
+          className="text-center mb-8"
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           <div className="inline-block p-3 bg-pulse-blue/10 rounded-full mb-4">
             <Bot className="h-10 w-10 text-pulse-blue" />
           </div>
@@ -23,9 +50,9 @@ const DemoPulseBot = () => {
             Meet PulseBot: Your AI Culture Guide
           </h1>
           <p className="text-lg text-gray-600">
-            Experience how AI can help analyze and improve workplace culture
+            Ask questions about workplace culture, trust metrics, or engagement strategies
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
           <div className="lg:col-span-3 space-y-6">
@@ -67,7 +94,7 @@ const DemoPulseBot = () => {
         </div>
       </div>
       
-      <DemoNavigation nextLabel="View Results" />
+      <DemoNavigation nextLabel="Continue Demo" />
     </div>
   );
 };
