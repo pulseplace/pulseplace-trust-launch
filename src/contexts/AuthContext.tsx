@@ -132,7 +132,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         throw error;
       }
       
-      // Session and user will be set to null by the auth state change listener
       toast({
         title: "Signed out successfully",
       });
@@ -148,12 +147,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
+        console.log('Auth state changed:', event, session);
         setSession(session);
         setUser(session?.user ?? null);
         
         // If user is available, fetch their profile
         if (session?.user) {
-          // Use setTimeout to avoid potential recursion issues
           setTimeout(() => {
             fetchProfile(session.user.id).then(profileData => {
               setProfile(profileData);
@@ -168,6 +167,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     // THEN check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
+      console.log('Existing session:', session);
       setSession(session);
       setUser(session?.user ?? null);
       

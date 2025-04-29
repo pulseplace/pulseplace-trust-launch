@@ -137,11 +137,11 @@ export const useSurveyData = () => {
           if (error) throw error;
           
           if (data && data.length > 0) {
-            const formattedData = data.map(item => ({
+            const formattedData: SurveyData[] = data.map(item => ({
               organizationName: item.organization_name,
               organizationSize: item.organization_size,
               email: item.email,
-              answers: item.answers,
+              answers: Array.isArray(item.answers) ? item.answers : [],
               score: item.score,
               submittedAt: item.created_at,
             }));

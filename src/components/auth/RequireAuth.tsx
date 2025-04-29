@@ -21,12 +21,13 @@ const RequireAuth = ({ children, adminOnly = false }: RequireAuthProps) => {
   }
 
   if (!user) {
-    // Redirect to the login page if not logged in
+    // Save the current location for redirect after login
     return <Navigate to="/auth" state={{ from: location }} replace />;
   }
 
+  // Additional check for admin routes
   if (adminOnly && profile?.role !== 'admin') {
-    // Redirect to the dashboard if not an admin
+    // Redirect to dashboard if user is not an admin
     return <Navigate to="/dashboard" replace />;
   }
 
