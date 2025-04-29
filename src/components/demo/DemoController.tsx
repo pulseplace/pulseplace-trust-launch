@@ -34,7 +34,7 @@ const DemoController = () => {
     }
   }, [isDemoActive]);
 
-  // Debug logging
+  // Enhanced debug logging
   useEffect(() => {
     console.log("Demo Stage Changed:", currentStage);
   }, [currentStage]);
@@ -62,6 +62,9 @@ const DemoController = () => {
   };
 
   const renderStageContent = () => {
+    // Log which stage is being rendered
+    console.log("Rendering stage content for:", currentStage);
+    
     switch (currentStage) {
       case DemoStage.WELCOME:
         return <DemoWelcome />;
@@ -82,6 +85,7 @@ const DemoController = () => {
       case DemoStage.PULSEBOT:
         return <DemoPulseBot />;
       default:
+        console.warn("Unknown stage:", currentStage);
         return <DemoWelcome />;
     }
   };

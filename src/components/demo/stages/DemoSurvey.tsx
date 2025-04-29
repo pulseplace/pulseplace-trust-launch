@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { motion } from "framer-motion";
 import { BrainCircuit } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,16 +33,17 @@ const DemoSurvey = () => {
   const currentScore = scoreAnalysis?.totalScore || 0;
   const isLastQuestion = currentQuestion === questions.length - 1;
 
-  // DEBUG logging
-  console.log("Survey Status:", {
-    isComplete,
-    isProcessing,
-    currentQuestion,
-    totalQuestions: questions.length,
-    answersCount: answers.filter(a => a !== null).length,
-    pulseScore: currentScore,
-    isLastQuestion
-  });
+  // Additional debug logging when component renders or key state changes
+  useEffect(() => {
+    console.log("DemoSurvey - Current State:", {
+      currentQuestion: currentQuestion + 1,
+      totalQuestions: questions.length,
+      isLastQuestion,
+      answersCount: answers.filter(a => a !== null).length,
+      hasCompletedSurvey: isComplete,
+      isProcessing
+    });
+  }, [currentQuestion, answers, isComplete, isProcessing, isLastQuestion]);
 
   return (
     <div className="container px-4 py-12 mx-auto">

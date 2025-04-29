@@ -77,32 +77,44 @@ export function DemoProvider({ children }: { children: ReactNode }) {
   const [pulseScoreDetails, setPulseScoreDetails] = useState<PulseScoreDetails | null>(null);
   const [organizationName, setOrganizationName] = useState("Acme Inc.");
 
+  // Define the stages in their correct order for consistent navigation
   const stages = Object.values(DemoStage);
 
   const startDemo = () => {
     setIsDemoActive(true);
     setCurrentStage(DemoStage.WELCOME);
+    console.log("Demo started, stage set to WELCOME");
   };
 
   const exitDemo = () => {
     setIsDemoActive(false);
+    console.log("Demo exited");
   };
 
   const nextStage = () => {
     const currentIndex = stages.indexOf(currentStage);
     if (currentIndex < stages.length - 1) {
-      setCurrentStage(stages[currentIndex + 1]);
+      const nextStageValue = stages[currentIndex + 1];
+      console.log(`Moving from ${currentStage} to next stage: ${nextStageValue}`);
+      setCurrentStage(nextStageValue);
+    } else {
+      console.log("Already at last stage, cannot advance further");
     }
   };
 
   const previousStage = () => {
     const currentIndex = stages.indexOf(currentStage);
     if (currentIndex > 0) {
-      setCurrentStage(stages[currentIndex - 1]);
+      const prevStageValue = stages[currentIndex - 1];
+      console.log(`Moving from ${currentStage} to previous stage: ${prevStageValue}`);
+      setCurrentStage(prevStageValue);
+    } else {
+      console.log("Already at first stage, cannot go back further");
     }
   };
 
   const setStage = (stage: DemoStage) => {
+    console.log(`Setting stage directly to: ${stage}`);
     setCurrentStage(stage);
   };
 
