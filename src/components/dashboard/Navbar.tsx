@@ -1,7 +1,7 @@
 
 import React from "react";
-import { Link } from "react-router-dom";
-import { Bell, Menu, Settings, HelpCircle } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { Bell, Menu, Settings, HelpCircle, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,7 +11,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface NavbarProps {
   isAdmin?: boolean;
@@ -19,6 +20,27 @@ interface NavbarProps {
 }
 
 const Navbar: React.FC<NavbarProps> = ({ isAdmin = false, toggleSidebar }) => {
+  const { user, profile, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+  };
+
+  // Get user initials for avatar fallback
+  const getInitials = () => {
+    if (profile?.full_name) {
+      return profile.full_name
+        .split(' ')
+        .map((n: string) => n[0])
+        .join('')
+        .toUpperCase()
+        .substring(0, 2);
+    }
+    return user?.email?.substring(0, 2).toUpperCase() || "U";
+  };
+
   return (
     <header className="sticky top-0 z-10 bg-white border-b shadow-sm">
       <div className="px-4 py-2 flex items-center justify-between">
@@ -55,20 +77,28 @@ const Navbar: React.FC<NavbarProps> = ({ isAdmin = false, toggleSidebar }) => {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-9 w-9 rounded-full">
                 <Avatar className="h-9 w-9">
+                  {profile?.avatar_url && (
+                    <AvatarImage src={profile.avatar_url} alt="User avatar" />
+                  )}
                   <AvatarFallback className="bg-pulse-purple text-white">
-                    {isAdmin ? "AD" : "TD"}
+                    {getInitials()}
                   </AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuLabel>{profile?.full_name || user?.email}</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Settings</DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link to="/dashboard" className="flex w-full">Profile</Link>
+              </DropdownMenuItem>
+              <DropdownMenuItem>
+                <Link to="/dashboard" className="flex w-full">Settings</Link>
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem asChild>
-                <Link to="/">Sign out</Link>
+              <DropdownMenuItem onClick={handleSignOut}>
+                <LogOut className="mr-2 h-4 w-4" />
+                <span>Sign out</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

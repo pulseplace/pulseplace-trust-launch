@@ -1,12 +1,15 @@
 
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import { Menu, X, User } from "lucide-react";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,6 +19,11 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleNavigate = (path: string) => {
+    navigate(path);
+    setIsOpen(false);
+  };
 
   return (
     <header 
@@ -40,12 +48,23 @@ const Navbar = () => {
           </nav>
 
           <div className="hidden md:flex items-center space-x-4">
-            <Link to="/dashboard">
-              <Button variant="outline">Sign In</Button>
-            </Link>
-            <Link to="/survey">
-              <Button className="bg-pulse-blue hover:bg-pulse-blue/90">Get Started</Button>
-            </Link>
+            {user ? (
+              <Link to="/dashboard">
+                <Button className="bg-pulse-blue hover:bg-pulse-blue/90">
+                  <User className="mr-2 h-4 w-4" />
+                  Dashboard
+                </Button>
+              </Link>
+            ) : (
+              <>
+                <Link to="/auth">
+                  <Button variant="outline">Sign In</Button>
+                </Link>
+                <Link to="/survey">
+                  <Button className="bg-pulse-blue hover:bg-pulse-blue/90">Get Started</Button>
+                </Link>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -76,12 +95,31 @@ const Navbar = () => {
               </Link>
             </nav>
             <div className="flex flex-col space-y-2">
-              <Link to="/dashboard" onClick={() => setIsOpen(false)}>
-                <Button variant="outline" className="w-full">Sign In</Button>
-              </Link>
-              <Link to="/survey" onClick={() => setIsOpen(false)}>
-                <Button className="w-full bg-pulse-blue hover:bg-pulse-blue/90">Get Started</Button>
-              </Link>
+              {user ? (
+                <Button 
+                  className="w-full bg-pulse-blue hover:bg-pulse-blue/90"
+                  onClick={() => handleNavigate("/dashboard")}
+                >
+                  <User className="mr-2 h-4 w-4" />
+                  Dashboard
+                </Button>
+              ) : (
+                <>
+                  <Button 
+                    variant="outline" 
+                    className="w-full"
+                    onClick={() => handleNavigate("/auth")}
+                  >
+                    Sign In
+                  </Button>
+                  <Button 
+                    className="w-full bg-pulse-blue hover:bg-pulse-blue/90"
+                    onClick={() => handleNavigate("/survey")}
+                  >
+                    Get Started
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>

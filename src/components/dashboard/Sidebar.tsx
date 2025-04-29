@@ -13,6 +13,8 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -26,6 +28,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   isAdmin = false 
 }) => {
   const location = useLocation();
+  const { user, profile } = useAuth();
   
   const userNavItems = [
     {
@@ -66,6 +69,19 @@ const Sidebar: React.FC<SidebarProps> = ({
   ];
 
   const navItems = isAdmin ? adminNavItems : userNavItems;
+
+  // Get user initials for avatar fallback
+  const getInitials = () => {
+    if (profile?.full_name) {
+      return profile.full_name
+        .split(' ')
+        .map((n: string) => n[0])
+        .join('')
+        .toUpperCase()
+        .substring(0, 2);
+    }
+    return user?.email?.substring(0, 2).toUpperCase() || "U";
+  };
   
   return (
     <div className={cn(
@@ -126,19 +142,31 @@ const Sidebar: React.FC<SidebarProps> = ({
       <div className="p-4 border-t">
         {isOpen ? (
           <div className="flex items-center">
-            <div className="relative rounded-full bg-pulse-purple h-10 w-10 flex items-center justify-center text-white font-semibold">
-              {isAdmin ? "A" : "U"}
-            </div>
+            <Avatar className="h-10 w-10">
+              {profile?.avatar_url && (
+                <AvatarImage src={profile.avatar_url} alt="User avatar" />
+              )}
+              <AvatarFallback className="bg-pulse-purple text-white">
+                {getInitials()}
+              </AvatarFallback>
+            </Avatar>
             <div className="ml-3">
-              <p className="text-sm font-medium">{isAdmin ? "Admin User" : "Team User"}</p>
-              <p className="text-xs text-gray-500">PulsePlace {isAdmin ? "Admin" : "Member"}</p>
+              <p className="text-sm font-medium">{profile?.full_name || user?.email}</p>
+              <p className="text-xs text-gray-500">
+                {isAdmin ? "Administrator" : profile?.role || "Team Member"}
+              </p>
             </div>
           </div>
         ) : (
           <div className="flex justify-center">
-            <div className="relative rounded-full bg-pulse-purple h-10 w-10 flex items-center justify-center text-white font-semibold">
-              {isAdmin ? "A" : "U"}
-            </div>
+            <Avatar className="h-10 w-10">
+              {profile?.avatar_url && (
+                <AvatarImage src={profile.avatar_url} alt="User avatar" />
+              )}
+              <AvatarFallback className="bg-pulse-purple text-white">
+                {getInitials()}
+              </AvatarFallback>
+            </Avatar>
           </div>
         )}
       </div>

@@ -134,7 +134,8 @@ export const useSurveyLogic = () => {
         toast({
           title: "More Answers Needed",
           description: "Please answer more questions to get an accurate score.",
-          variant: "warning",
+          // Fix: Change "warning" to "default" as it's not supported in our toast component
+          variant: "default",
           duration: 3000,
         });
         return;
