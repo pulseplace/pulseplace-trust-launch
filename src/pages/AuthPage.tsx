@@ -7,7 +7,8 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from "@/contexts/AuthContext";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const AuthPage: React.FC = () => {
   const navigate = useNavigate();
@@ -19,6 +20,22 @@ const AuthPage: React.FC = () => {
   const [fullName, setFullName] = useState("");
   const [formLoading, setFormLoading] = useState(false);
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
+
+  // Check for query parameters that might indicate authentication results
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const errorParam = params.get('error');
+    const messageParam = params.get('message');
+    
+    if (errorParam) {
+      setError(decodeURIComponent(errorParam));
+    }
+    
+    if (messageParam) {
+      setMessage(decodeURIComponent(messageParam));
+    }
+  }, [location]);
 
   // If user is already logged in, redirect to dashboard
   useEffect(() => {
@@ -31,12 +48,13 @@ const AuthPage: React.FC = () => {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setMessage("");
     setFormLoading(true);
     
     try {
       await signIn(email, password);
     } catch (error: any) {
-      setError(error.message || "Failed to sign in");
+      setError(error.message || "Failed to sign in. Please check your email and password.");
     } finally {
       setFormLoading(false);
     }
@@ -45,13 +63,15 @@ const AuthPage: React.FC = () => {
   const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setMessage("");
     setFormLoading(true);
     
     try {
       await signUp(email, password, fullName);
+      setMessage("Registration successful! Please check your email for verification instructions.");
       setActiveTab("login");
     } catch (error: any) {
-      setError(error.message || "Failed to sign up");
+      setError(error.message || "Failed to sign up. Please try again.");
     } finally {
       setFormLoading(false);
     }
@@ -74,6 +94,23 @@ const AuthPage: React.FC = () => {
             Sign in to access your dashboard and manage your workplace culture certification.
           </CardDescription>
         </CardHeader>
+        
+        {message && (
+          <div className="px-6 mb-4">
+            <Alert className="bg-green-50 text-green-800 border-green-200">
+              <AlertDescription>{message}</AlertDescription>
+            </Alert>
+          </div>
+        )}
+        
+        {error && (
+          <div className="px-6 mb-4">
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4 mr-2" />
+              <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          </div>
+        )}
         
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as "login" | "register")}>
           <TabsList className="grid grid-cols-2 w-full">
@@ -99,7 +136,7 @@ const AuthPage: React.FC = () => {
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
                     <Label htmlFor="password">Password</Label>
-                    <Button variant="link" className="p-0 h-auto text-xs">
+                    <Button variant="link" className="p-0 h-auto text-xs" type="button">
                       Forgot password?
                     </Button>
                   </div>
@@ -112,10 +149,6 @@ const AuthPage: React.FC = () => {
                     required
                   />
                 </div>
-                
-                {error && (
-                  <div className="text-sm text-destructive">{error}</div>
-                )}
               </CardContent>
               
               <CardFooter>
@@ -174,10 +207,6 @@ const AuthPage: React.FC = () => {
                   />
                   <p className="text-xs text-gray-500">Password must be at least 6 characters</p>
                 </div>
-                
-                {error && (
-                  <div className="text-sm text-destructive">{error}</div>
-                )}
               </CardContent>
               
               <CardFooter>

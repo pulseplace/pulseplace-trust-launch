@@ -137,14 +137,28 @@ export const useSurveyData = () => {
           if (error) throw error;
           
           if (data && data.length > 0) {
-            const formattedData: SurveyData[] = data.map(item => ({
-              organizationName: item.organization_name,
-              organizationSize: item.organization_size,
-              email: item.email,
-              answers: Array.isArray(item.answers) ? item.answers : [],
-              score: item.score,
-              submittedAt: item.created_at,
-            }));
+            const formattedData: SurveyData[] = data.map(item => {
+              // Process answers differently based on what we get from the database
+              let processedAnswers: (number | null)[] = [];
+              
+              if (Array.isArray(item.answers)) {
+                // Try to convert each item to a number if possible
+                processedAnswers = item.answers.map(answer => {
+                  if (answer === null) return null;
+                  const num = Number(answer);
+                  return isNaN(num) ? null : num;
+                });
+              }
+              
+              return {
+                organizationName: item.organization_name,
+                organizationSize: item.organization_size,
+                email: item.email,
+                answers: processedAnswers,
+                score: item.score,
+                submittedAt: item.created_at,
+              };
+            });
             
             setStoredSurveys(formattedData);
             return formattedData;

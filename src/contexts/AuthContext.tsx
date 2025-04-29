@@ -59,7 +59,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signIn = async (email: string, password: string) => {
     try {
       setIsLoading(true);
+      console.log("Attempting sign in with:", email);
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      
+      console.log("Sign in response:", data, error);
       
       if (error) {
         toast({
@@ -86,15 +89,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signUp = async (email: string, password: string, fullName: string) => {
     try {
       setIsLoading(true);
+      console.log("Attempting sign up with:", email, fullName);
+      
       const { data, error } = await supabase.auth.signUp({ 
         email, 
         password,
         options: {
           data: {
             full_name: fullName,
-          }
+          },
+          emailRedirectTo: window.location.origin + '/auth'
         }
       });
+      
+      console.log("Sign up response:", data, error);
       
       if (error) {
         toast({
@@ -144,6 +152,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Listen for auth state changes
   useEffect(() => {
+    console.log("Setting up auth state listener");
+    
     // Set up auth state listener FIRST
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
