@@ -18,6 +18,7 @@ import PulseBotPage from "./pages/PulseBotPage";
 import CertificationPage from "./pages/CertificationPage";
 import CompetitiveAnalysis from "./pages/CompetitiveAnalysis";
 import DemoController from "./components/demo/DemoController";
+import PulseScoreLite from "./pages/PulseScoreLite";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
             <Route path="/survey" element={<SurveyPage />} />
             <Route path="/thank-you" element={<ThankYouPage />} />
             <Route path="/demo" element={<DemoController />} />
+            <Route path="/pulse-score-lite" element={<PulseScoreLite />} />
             <Route path="/competitive-analysis" element={<CompetitiveAnalysis />} />
             
             {/* Dashboard Routes */}

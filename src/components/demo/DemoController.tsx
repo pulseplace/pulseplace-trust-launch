@@ -12,6 +12,7 @@ import DemoDashboard from "./stages/DemoDashboard";
 import DemoSharing from "./stages/DemoSharing";
 import DemoPulseBot from "./stages/DemoPulseBot";
 import { FloatingPulseBotButton } from "./pulsebot/FloatingPulseBotButton";
+import { toast } from "@/components/ui/use-toast";
 
 const DemoController = () => {
   const { isDemoActive, currentStage, setStage } = useDemo();
@@ -22,6 +23,16 @@ const DemoController = () => {
       navigate("/");
     }
   }, [isDemoActive, navigate]);
+
+  useEffect(() => {
+    if (isDemoActive && currentStage === DemoStage.WELCOME) {
+      toast({
+        title: "Demo Mode Active",
+        description: "Navigate through our interactive demo or click the PulseBot button for assistance.",
+        duration: 5000,
+      });
+    }
+  }, [isDemoActive]);
 
   // Debug logging
   useEffect(() => {
