@@ -47,7 +47,7 @@ export const useSurveyLogic = () => {
     
     setTimeout(() => {
       setShowInsight(true);
-    }, 500);
+    }, 300);
   };
 
   const handleNextQuestion = () => {

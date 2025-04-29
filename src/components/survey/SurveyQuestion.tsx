@@ -42,6 +42,20 @@ const SurveyQuestion: React.FC<QuestionProps> = ({
         return "bg-gray-100 text-gray-800";
     }
   };
+  
+  // Get selected color based on category
+  const getSelectedStyles = () => {
+    switch (category) {
+      case "trust":
+        return "border-blue-500 bg-blue-50";
+      case "engagement":
+        return "border-purple-500 bg-purple-50";
+      case "wellbeing":
+        return "border-amber-500 bg-amber-50";
+      default:
+        return "border-pulse-blue bg-blue-50";
+    }
+  };
 
   // Get category label
   const getCategoryLabel = () => {
@@ -101,7 +115,11 @@ const SurveyQuestion: React.FC<QuestionProps> = ({
             />
             <Label
               htmlFor={`${id}-${option.value}`}
-              className="flex flex-col items-center justify-between rounded-md border-2 border-muted p-4 hover:bg-gray-50 hover:border-gray-200 peer-data-[state=checked]:border-pulse-blue [&:has([data-state=checked])]:border-pulse-blue cursor-pointer w-full"
+              className={`flex flex-col items-center justify-between rounded-md border-2 border-gray-200 p-4 
+                hover:bg-gray-50 hover:border-gray-300
+                peer-data-[state=checked]:${getSelectedStyles()} 
+                [&:has([data-state=checked])]:${getSelectedStyles()}
+                cursor-pointer w-full transition-all duration-200`}
             >
               <div className="text-lg font-semibold">{option.value}</div>
               <div className="text-xs text-center">{option.label}</div>
