@@ -1,8 +1,97 @@
+
 #root {
-  max-width: 1280px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
+}
+
+/* Brand colors */
+.text-pulse-blue {
+  color: #1A5AFF;
+}
+
+.text-pulse-coral {
+  color: #FF6B6B;
+}
+
+.text-pulse-navy {
+  color: #091F36;
+}
+
+.bg-pulse-blue {
+  background-color: #1A5AFF;
+}
+
+.bg-pulse-coral {
+  background-color: #FF6B6B;
+}
+
+.bg-pulse-navy {
+  background-color: #091F36;
+}
+
+/* Enhanced buttons */
+.btn-pulse {
+  @apply py-2 px-4 rounded-md transition-all duration-300;
+}
+
+.btn-pulse-blue {
+  @apply bg-pulse-blue text-white hover:bg-pulse-blue/90;
+}
+
+.btn-pulse-coral {
+  @apply bg-pulse-coral text-white hover:bg-pulse-coral/90;
+}
+
+/* Gradient backgrounds */
+.gradient-bg-blue {
+  background: linear-gradient(135deg, #1A5AFF 0%, #6BA5FF 100%);
+}
+
+.gradient-bg-coral {
+  background: linear-gradient(135deg, #FF6B6B 0%, #FFB8B8 100%);
+}
+
+.gradient-bg-mixed {
+  background: linear-gradient(135deg, #1A5AFF 0%, #FF6B6B 100%);
+}
+
+/* Enhanced text elements */
+.heading-xl {
+  @apply text-4xl md:text-5xl font-bold;
+}
+
+.heading-lg {
+  @apply text-3xl md:text-4xl font-bold;
+}
+
+.heading-md {
+  @apply text-2xl md:text-3xl font-bold;
+}
+
+/* Card & container styling */
+.card-pulse {
+  @apply bg-white rounded-xl shadow-md p-6 transition-all duration-300;
+}
+
+.card-pulse:hover {
+  @apply shadow-lg;
+}
+
+/* Animation classes */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .logo {

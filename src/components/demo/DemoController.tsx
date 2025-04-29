@@ -37,6 +37,19 @@ const DemoController = () => {
     setStage(DemoStage.PULSEBOT);
   };
 
+  const getBackgroundClass = () => {
+    switch (currentStage) {
+      case DemoStage.WELCOME:
+        return "bg-gradient-to-b from-white via-pulse-blue/5 to-white";
+      case DemoStage.CERTIFICATION:
+        return "bg-gradient-to-b from-white via-pulse-coral/5 to-white";
+      case DemoStage.PULSEBOT:
+        return "bg-gradient-to-b from-white via-pulse-navy/5 to-white";
+      default:
+        return "bg-gray-50";
+    }
+  };
+
   const renderStageContent = () => {
     switch (currentStage) {
       case DemoStage.WELCOME:
@@ -63,7 +76,7 @@ const DemoController = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
+    <div className={`min-h-screen pb-20 ${getBackgroundClass()} bg-pattern`}>
       {renderStageContent()}
       {showPulseBotButton && <FloatingPulseBotButton onClick={handlePulseBotClick} />}
     </div>

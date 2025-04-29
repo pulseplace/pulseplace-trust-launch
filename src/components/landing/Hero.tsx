@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Play } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useDemo } from "@/contexts/DemoContext";
+import { motion } from "framer-motion";
 
 const Hero = () => {
   const { startDemo } = useDemo();
@@ -12,10 +13,15 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative py-20 overflow-hidden bg-gradient-to-b from-white via-pulse-gray/5 to-white">
+    <section className="relative py-20 overflow-hidden bg-pattern bg-gradient-to-b from-white via-pulse-gray/5 to-white">
       <div className="container px-4 md:px-6">
         <div className="flex flex-col lg:flex-row items-center gap-12">
-          <div className="flex-1 text-center lg:text-left space-y-8">
+          <motion.div 
+            className="flex-1 text-center lg:text-left space-y-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
             <h1 className="text-5xl md:text-6xl font-bold tracking-tight text-pulse-navy">
               Build Trust.
               <br />
@@ -29,7 +35,7 @@ const Hero = () => {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Link to="/pulse-score-lite">
-                <Button size="lg" className="bg-pulse-blue hover:bg-pulse-blue/90 text-white">
+                <Button size="lg" className="bg-pulse-blue hover:bg-pulse-blue/90 text-white button-hover-effect">
                   Start Free Assessment
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
@@ -37,15 +43,20 @@ const Hero = () => {
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="border-pulse-blue text-pulse-blue hover:bg-pulse-blue/5"
+                className="border-pulse-blue text-pulse-blue hover:bg-pulse-blue/5 button-hover-effect"
                 onClick={handleDemoClick}
               >
                 <Play className="mr-2 h-4 w-4" />
                 Try AI Demo
               </Button>
             </div>
-          </div>
-          <div className="flex-1 w-full max-w-2xl">
+          </motion.div>
+          <motion.div 
+            className="flex-1 w-full max-w-2xl"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
             <div className="relative aspect-square rounded-2xl bg-gradient-to-br from-pulse-blue/10 via-pulse-coral/10 to-transparent p-8">
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md">
@@ -92,7 +103,7 @@ const Hero = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>
