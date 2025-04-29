@@ -66,6 +66,15 @@
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight;
+  }
+  
+  /* Improved form elements */
+  input, textarea, select {
+    @apply transition-all duration-200;
+  }
 }
 
 @layer components {
@@ -79,6 +88,31 @@
 
   .button-hover-effect {
     @apply transition-all duration-300 hover:shadow-md hover:translate-y-[-2px];
+  }
+  
+  /* Survey specific components */
+  .survey-option {
+    @apply rounded-md border-2 border-gray-200 p-4 
+      hover:bg-gray-50 hover:border-gray-300
+      cursor-pointer w-full transition-all duration-200;
+  }
+  
+  .survey-option-selected {
+    @apply border-pulse-blue bg-blue-50;
+  }
+  
+  /* Card hover effects */
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-lg hover:border-pulse-blue/30;
+  }
+  
+  /* Enhanced buttons */
+  .btn-pulse-primary {
+    @apply bg-pulse-blue text-white hover:bg-pulse-blue/90 transition-colors;
+  }
+  
+  .btn-pulse-secondary {
+    @apply bg-white text-pulse-blue border border-pulse-blue hover:bg-pulse-blue/5 transition-colors;
   }
 }
 
@@ -100,4 +134,31 @@ section {
   max-width: 1280px;
   margin-left: auto;
   margin-right: auto;
+}
+
+/* Animation utilities */
+.fade-in {
+  animation: fadeIn 0.5s ease-in forwards;
+}
+
+.scale-in {
+  animation: scaleIn 0.3s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
 }
