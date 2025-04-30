@@ -1,19 +1,18 @@
 
 import React, { useState, useRef, useEffect } from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Bot, Send, Info, X } from "lucide-react";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { Message } from "./types";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
+import { Send, Bot, Lightbulb } from "lucide-react";
 import MessageBubble from "./MessageBubble";
+import SuggestedTopics from "./SuggestedTopics";
+import { Message } from "./types";
 
 interface ChatInterfaceProps {
   messages: Message[];
   isLoading: boolean;
-  onSendMessage: (message: string) => void;
+  onSendMessage: (content: string) => Promise<void>;
   onClearChat: () => void;
 }
 
@@ -23,88 +22,108 @@ const ChatInterface: React.FC<ChatInterfaceProps> = ({
   onSendMessage,
   onClearChat,
 }) => {
-  const [input, setInput] = useState("");
-  const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const [inputValue, setInputValue] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [showSuggestions, setShowSuggestions] = useState(messages.length <= 1);
 
+  // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
-    if (scrollAreaRef.current) {
-      scrollAreaRef.current.scrollTop = scrollAreaRef.current.scrollHeight;
-    }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  const handleSend = () => {
-    if (!input.trim()) return;
-    onSendMessage(input.trim());
-    setInput("");
+  // Focus input when component mounts
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (inputValue.trim() === "") return;
+    
+    onSendMessage(inputValue);
+    setInputValue("");
+    setShowSuggestions(false);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey && !isLoading) {
-      e.preventDefault();
-      handleSend();
-    }
+  const handleSuggestionClick = (suggestion: string) => {
+    onSendMessage(suggestion);
+    setShowSuggestions(false);
   };
 
   return (
-    <Card className="flex-1 flex flex-col">
-      <CardHeader className="border-b">
-        <div className="flex items-center">
-          <Avatar className="h-8 w-8 mr-2 bg-pulse-blue">
-            <AvatarFallback><Bot className="h-4 w-4" /></AvatarFallback>
-          </Avatar>
-          <div className="flex items-center">
-            PulseBot
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Info className="inline-block ml-2 h-4 w-4 text-gray-400 cursor-help" />
-              </TooltipTrigger>
-              <TooltipContent className="max-w-xs">
-                <p>PulseBot analyzes your organization's culture data to provide personalized insights and evidence-based recommendations.</p>
-              </TooltipContent>
-            </Tooltip>
+    <div className="flex flex-col h-full bg-white border rounded-lg overflow-hidden">
+      {/* Chat header */}
+      <div className="p-4 border-b bg-gray-50">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <div className="bg-pulse-blue/10 p-2 rounded-full">
+              <Bot className="h-5 w-5 text-pulse-blue" />
+            </div>
+            <div>
+              <h2 className="text-lg font-semibold">PulseBot</h2>
+              <p className="text-xs text-gray-500">AI Workplace Culture Assistant</p>
+            </div>
           </div>
-          <Button 
-            variant="outline" 
-            size="sm" 
-            onClick={onClearChat}
-            className="ml-auto flex items-center gap-1"
-          >
-            <X className="h-4 w-4" />
+          <Button variant="ghost" size="sm" onClick={onClearChat}>
             Clear Chat
           </Button>
         </div>
-      </CardHeader>
-      <CardContent className="flex-1 overflow-hidden p-0">
-        <ScrollArea className="h-full p-4" ref={scrollAreaRef}>
-          <div className="space-y-4">
-            {messages.map((message) => (
-              <MessageBubble key={message.id} message={message} />
-            ))}
-          </div>
-        </ScrollArea>
-      </CardContent>
-      <div className="p-4 border-t">
+      </div>
+
+      {/* Chat messages */}
+      <ScrollArea className="flex-1 p-4">
+        <div className="space-y-6">
+          {messages.map((message) => (
+            <MessageBubble key={message.id} message={message} />
+          ))}
+          
+          {isLoading && (
+            <MessageBubble
+              message={{
+                id: "loading",
+                type: "bot",
+                content: "",
+                isThinking: true,
+              }}
+            />
+          )}
+          
+          {showSuggestions && messages.length <= 2 && (
+            <div className="animate-fadeIn">
+              <div className="flex items-center space-x-2 mb-4 text-gray-500">
+                <Lightbulb className="h-4 w-4" />
+                <span className="text-sm">Try asking about:</span>
+              </div>
+              <SuggestedTopics onTopicSelect={handleSuggestionClick} />
+            </div>
+          )}
+          
+          <div ref={messagesEndRef} />
+        </div>
+      </ScrollArea>
+
+      <Separator />
+
+      {/* Input area */}
+      <form onSubmit={handleSubmit} className="p-4 bg-gray-50">
         <div className="flex space-x-2">
           <Input
-            placeholder="Ask about workplace culture, trust metrics, or engagement strategies..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            disabled={isLoading}
+            ref={inputRef}
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            placeholder="Ask about trust metrics, culture improvement..."
             className="flex-1"
+            disabled={isLoading}
           />
-          <Button 
-            onClick={handleSend} 
-            disabled={!input.trim() || isLoading}
-            className="bg-pulse-blue hover:bg-pulse-blue/90"
-          >
+          <Button type="submit" disabled={isLoading || inputValue.trim() === ""}>
             <Send className="h-4 w-4" />
+            <span className="sr-only">Send</span>
           </Button>
         </div>
-      </div>
-    </Card>
+      </form>
+    </div>
   );
 };
 
 export default ChatInterface;
-

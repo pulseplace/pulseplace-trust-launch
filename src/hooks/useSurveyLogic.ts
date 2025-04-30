@@ -4,11 +4,9 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "@/components/ui/use-toast";
 import { surveyQuestions } from "@/components/survey/questions";
 import { useSurveyData } from "@/hooks/useSurveyData";
-import { useAuth } from "@/contexts/AuthContext";
 
 export const useSurveyLogic = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
   const { saveSurveyResponse } = useSurveyData();
   
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -16,89 +14,96 @@ export const useSurveyLogic = () => {
   const [organizationName, setOrganizationName] = useState("");
   const [organizationSize, setOrganizationSize] = useState("");
   const [email, setEmail] = useState("");
-
-  // Pre-fill email if user is logged in
-  useEffect(() => {
-    if (user?.email) {
-      setEmail(user.email);
-    }
-  }, [user]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showInsight, setShowInsight] = useState(false);
+  
+  const questions = surveyQuestions;
+  
+  // Calculate the total score when answers change
+  const calculateScore = () => {
+    const validAnswers = answers.filter(a => a !== null);
+    if (validAnswers.length === 0) return 0;
+    
+    return Math.round(validAnswers.reduce((sum, val) => sum + (val || 0), 0) / validAnswers.length * 20);
+  };
 
   const handleAnswerChange = (value: number) => {
     const newAnswers = [...answers];
     newAnswers[currentQuestion] = value;
     setAnswers(newAnswers);
+    setShowInsight(true);
   };
 
   const handleNext = async () => {
-    if (answers[currentQuestion] === null) {
-      toast({
-        title: "Please select an answer",
-        description: "You need to select an option to continue.",
-        variant: "destructive",
-      });
-      return;
-    }
-    
-    if (currentQuestion < surveyQuestions.length - 1) {
+    if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
-      window.scrollTo(0, 0);
+      setShowInsight(false);
     } else {
-      await handleSubmit();
+      // Submit survey
+      await handleSubmitSurvey();
     }
   };
 
   const handleBack = () => {
     if (currentQuestion > 0) {
       setCurrentQuestion(currentQuestion - 1);
-      window.scrollTo(0, 0);
+      setShowInsight(answers[currentQuestion - 1] !== null);
     }
   };
 
   const handleSkip = () => {
-    if (currentQuestion < surveyQuestions.length - 1) {
+    if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
-      window.scrollTo(0, 0);
-    } else {
-      handleSubmit();
+      setShowInsight(false);
     }
   };
 
-  const handleSubmit = async () => {
+  const startSurvey = () => {
+    if (!organizationName || !email) {
+      toast({
+        title: "Missing Information",
+        description: "Please provide your organization name and email.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    setCurrentQuestion(1); // Move to first actual question
+  };
+
+  const handleSubmitSurvey = async () => {
     try {
-      // Calculate PulseScore
-      const validAnswers = answers.filter((answer) => answer !== null) as number[];
-      const averageScore = validAnswers.reduce((sum, answer) => sum + answer, 0) / validAnswers.length;
-      const pulseScore = Math.round(averageScore * 20); // Convert to 0-100 scale
+      setIsSubmitting(true);
       
-      // Save survey response
-      const surveyData = {
+      const validAnswers = answers.filter(a => a !== null);
+      if (validAnswers.length < 3) {
+        toast({
+          title: "More Responses Needed",
+          description: "Please answer at least 3 questions to generate meaningful insights.",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+      
+      const score = calculateScore();
+      
+      // Save the survey response
+      const success = await saveSurveyResponse({
         organizationName,
         organizationSize,
         email,
         answers,
-        score: pulseScore
-      };
-
-      const saved = await saveSurveyResponse(surveyData);
-
-      if (!saved) {
-        toast({
-          title: "Warning",
-          description: "Your responses were saved locally but couldn't be uploaded to the server.",
-          variant: "default",
-        });
-      }
-      
-      // Navigate to thank you page with the score
-      navigate("/thank-you", { 
-        state: { 
-          pulseScore,
-          organizationName,
-          organizationSize,
-          email 
-        } 
+        score,
       });
+      
+      if (success) {
+        toast({
+          title: "Survey Completed",
+          description: "Thank you for completing the survey!",
+        });
+        navigate("/thank-you");
+      }
     } catch (error) {
       console.error("Error submitting survey:", error);
       toast({
@@ -106,11 +111,9 @@ export const useSurveyLogic = () => {
         description: "There was an error submitting your survey. Please try again.",
         variant: "destructive",
       });
+    } finally {
+      setIsSubmitting(false);
     }
-  };
-
-  const startSurvey = () => {
-    setCurrentQuestion(0);
   };
 
   return {
@@ -119,7 +122,9 @@ export const useSurveyLogic = () => {
     organizationName,
     organizationSize,
     email,
-    questions: surveyQuestions,
+    questions,
+    showInsight,
+    isSubmitting,
     setOrganizationName,
     setOrganizationSize,
     setEmail,
@@ -127,6 +132,7 @@ export const useSurveyLogic = () => {
     handleNext,
     handleBack,
     handleSkip,
-    startSurvey
+    startSurvey,
+    progressPercentage: ((currentQuestion + 1) / questions.length) * 100
   };
 };

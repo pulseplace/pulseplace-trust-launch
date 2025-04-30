@@ -2,131 +2,84 @@
 import React from "react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import { Info } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Brain } from "lucide-react";
 
-export interface QuestionProps {
+interface SurveyQuestionProps {
   id: string;
   question: string;
   options: { value: number; label: string }[];
   value: number | null;
   onChange: (value: number) => void;
-  category?: "trust" | "engagement" | "wellbeing";
-  contextualHelp?: string;
+  showInsight?: boolean;
 }
 
-const SurveyQuestion: React.FC<QuestionProps> = ({
+const SurveyQuestion: React.FC<SurveyQuestionProps> = ({
   id,
   question,
   options,
   value,
   onChange,
-  category,
-  contextualHelp
+  showInsight = false,
 }) => {
-  // Get category color
-  const getCategoryColor = () => {
-    switch (category) {
-      case "trust":
-        return "bg-blue-100 text-blue-800";
-      case "engagement":
-        return "bg-purple-100 text-purple-800";
-      case "wellbeing":
-        return "bg-amber-100 text-amber-800";
-      default:
-        return "bg-gray-100 text-gray-800";
-    }
-  };
-  
-  // Get selected color based on category
-  const getSelectedStyles = () => {
-    switch (category) {
-      case "trust":
-        return "border-blue-500 bg-blue-50";
-      case "engagement":
-        return "border-purple-500 bg-purple-50";
-      case "wellbeing":
-        return "border-amber-500 bg-amber-50";
-      default:
-        return "border-pulse-blue bg-blue-50";
-    }
-  };
-
-  // Get category label
-  const getCategoryLabel = () => {
-    switch (category) {
-      case "trust":
-        return "Trust";
-      case "engagement":
-        return "Engagement";
-      case "wellbeing":
-        return "Wellbeing";
-      default:
-        return "General";
-    }
+  // Generate a fake insight when a question is answered
+  const getInsight = () => {
+    const insights = [
+      "Organizations scoring high on this dimension see 34% higher employee retention.",
+      "Teams with strong alignment on this point show 27% higher productivity.",
+      "Companies that excel here report 23% fewer workplace conflicts.",
+      "Leaders who focus on this area build teams with 31% higher engagement scores.",
+      "This factor correlates with 42% improved internal collaboration metrics."
+    ];
+    
+    return insights[Math.floor(Math.random() * insights.length)];
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-start justify-between">
-        <h3 className="text-xl font-medium">{question}</h3>
-        {category && (
-          <div className="flex items-center gap-2">
-            <span className={`text-xs px-2 py-0.5 rounded-full ${getCategoryColor()}`}>
-              {getCategoryLabel()}
-            </span>
-            {contextualHelp && (
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="cursor-help">
-                      <Info className="h-4 w-4 text-gray-500" />
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent className="max-w-xs">
-                    <p>{contextualHelp}</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            )}
-          </div>
-        )}
-      </div>
-
+    <div className="space-y-6">
+      <h2 className="text-2xl font-semibold text-gray-800">{question}</h2>
+      
       <RadioGroup
         value={value?.toString()}
         onValueChange={(val) => onChange(parseInt(val))}
-        className="grid grid-cols-1 gap-3 sm:grid-cols-5"
+        className="space-y-3"
       >
         {options.map((option) => (
           <div
             key={option.value}
-            className="flex flex-col items-center space-y-2"
+            className={`flex items-center space-x-2 rounded-md border p-4 transition-all
+              ${value === option.value ? "border-pulse-blue bg-pulse-blue/5" : "border-gray-200 hover:border-gray-300"}`}
           >
-            <RadioGroupItem
-              value={option.value.toString()}
-              id={`${id}-${option.value}`}
-              className="peer sr-only"
-            />
+            <RadioGroupItem value={option.value.toString()} id={`${id}-${option.value}`} />
             <Label
               htmlFor={`${id}-${option.value}`}
-              className={`flex flex-col items-center justify-between rounded-md border-2 border-gray-200 p-4 
-                hover:bg-gray-50 hover:border-gray-300
-                peer-data-[state=checked]:${getSelectedStyles()} 
-                [&:has([data-state=checked])]:${getSelectedStyles()}
-                cursor-pointer w-full transition-all duration-200`}
+              className="flex-grow cursor-pointer text-base font-medium"
             >
-              <div className="text-lg font-semibold">{option.value}</div>
-              <div className="text-xs text-center">{option.label}</div>
+              {option.label}
             </Label>
           </div>
         ))}
       </RadioGroup>
+
+      {showInsight && value !== null && (
+        <Card className="p-4 bg-blue-50 border-blue-200 mt-6 animate-fadeIn">
+          <div className="flex items-start gap-3">
+            <div className="bg-pulse-blue/20 rounded-full p-2">
+              <Brain className="h-5 w-5 text-pulse-blue" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <h4 className="font-semibold">AI Culture Insight</h4>
+                <Badge variant="outline" className="bg-blue-100/60">
+                  PulsePlace AI
+                </Badge>
+              </div>
+              <p className="text-sm text-gray-700">{getInsight()}</p>
+            </div>
+          </div>
+        </Card>
+      )}
     </div>
   );
 };
