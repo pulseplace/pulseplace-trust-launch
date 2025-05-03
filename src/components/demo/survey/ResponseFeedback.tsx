@@ -1,91 +1,48 @@
 
-import React from "react";
-import { motion } from "framer-motion";
-import { questions } from "./surveyQuestions";
+import React from 'react';
+import { motion } from 'framer-motion';
+import { Lightbulb } from 'lucide-react';
 
 interface ResponseFeedbackProps {
-  answer: number | null;
-  questionId?: string;
+  value: number;
 }
 
-const ResponseFeedback: React.FC<ResponseFeedbackProps> = ({ answer, questionId }) => {
-  if (answer === null) return null;
+const ResponseFeedback: React.FC<ResponseFeedbackProps> = ({ value }) => {
+  const getFeedback = () => {
+    switch (value) {
+      case 1:
+        return "This indicates a critical area that needs immediate attention.";
+      case 2:
+        return "This suggests room for significant improvement in this aspect of workplace culture.";
+      case 3:
+        return "This shows a neutral perception, with potential for both improvement and building on existing strengths.";
+      case 4:
+        return "This reflects a positive aspect of your workplace culture that can be leveraged further.";
+      case 5:
+        return "This represents an exceptional strength that sets your organization apart.";
+      default:
+        return "Please select a response to see feedback.";
+    }
+  };
 
-  const question = questionId 
-    ? questions.find(q => q.id === questionId) 
-    : null;
-  
-  const benchmarkScore = question?.benchmarkScore || 3.5;
-  const benchmarkComparison = answer - benchmarkScore;
-  
-  if (answer === 4 || answer === 5) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mt-4 text-sm text-green-700 bg-green-50 p-3 rounded-md"
-      >
-        <div className="flex justify-between items-center mb-1">
-          <strong>Strength detected:</strong>
-          <span className="text-xs bg-green-100 px-2 py-1 rounded-full">
-            {benchmarkComparison > 0 
-              ? `${Math.abs(Math.round(benchmarkComparison * 20))}% above benchmark` 
-              : 'On par with benchmark'}
-          </span>
+  return (
+    <motion.div 
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="mt-4 p-4 bg-blue-50 border border-blue-100 rounded-md"
+    >
+      <div className="flex items-start gap-3">
+        <div className="bg-blue-100 rounded-full p-2">
+          <Lightbulb className="h-4 w-4 text-blue-600" />
         </div>
-        <p>Your positive response suggests a healthy culture element. This builds a strong foundation for trust and engagement.</p>
-        {question?.contextualHelp && (
-          <p className="mt-2 text-xs italic">{question.contextualHelp}</p>
-        )}
-      </motion.div>
-    );
-  }
-
-  if (answer === 1 || answer === 2) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mt-4 text-sm text-amber-700 bg-amber-50 p-3 rounded-md"
-      >
-        <div className="flex justify-between items-center mb-1">
-          <strong>Opportunity area:</strong>
-          <span className="text-xs bg-amber-100 px-2 py-1 rounded-full">
-            {`${Math.abs(Math.round(benchmarkComparison * 20))}% below benchmark`}
-          </span>
+        <div>
+          <h4 className="text-sm font-medium text-blue-800">Response Feedback</h4>
+          <p className="text-sm text-blue-700 mt-1">{getFeedback()}</p>
         </div>
-        <p>This response identifies a potential area for cultural improvement that could impact overall organizational health.</p>
-        {question?.contextualHelp && (
-          <p className="mt-2 text-xs italic">{question.contextualHelp}</p>
-        )}
-      </motion.div>
-    );
-  }
-
-  if (answer === 3) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 10 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="mt-4 text-sm text-blue-700 bg-blue-50 p-3 rounded-md"
-      >
-        <div className="flex justify-between items-center mb-1">
-          <strong>Neutral response:</strong>
-          <span className="text-xs bg-blue-100 px-2 py-1 rounded-full">
-            {Math.abs(benchmarkComparison) < 0.5 
-              ? 'Near benchmark' 
-              : `${Math.abs(Math.round(benchmarkComparison * 20))}% ${benchmarkComparison > 0 ? 'above' : 'below'} benchmark`}
-          </span>
-        </div>
-        <p>This area has potential for either improvement or becoming a strength with focused attention.</p>
-        {question?.contextualHelp && (
-          <p className="mt-2 text-xs italic">{question.contextualHelp}</p>
-        )}
-      </motion.div>
-    );
-  }
-
-  return null;
+      </div>
+    </motion.div>
+  );
 };
 
 export default ResponseFeedback;

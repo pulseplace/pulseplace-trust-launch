@@ -69,3 +69,6 @@ export const surveyQuestions: SurveyQuestion[] = [
     ],
   },
 ];
+
+// Export the array as 'questions' as well for compatibility
+export const questions = surveyQuestions;

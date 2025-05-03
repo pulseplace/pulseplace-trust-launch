@@ -1,56 +1,72 @@
 
-import React, { useState } from "react";
-import { toast } from "@/hooks/use-toast";
+import React from 'react';
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { ChatInterface } from "@/components/pulsebot/ChatInterface";
 import { SuggestedTopics } from "@/components/pulsebot/SuggestedTopics";
-import InsightsPanel from "@/components/pulsebot/InsightsPanel";
 
-const PulseBotPage: React.FC = () => {
-  const [selectedTopic, setSelectedTopic] = useState<string | null>(null);
-  
-  const handleTopicClick = (topic: string) => {
-    setSelectedTopic(topic);
-    toast({
-      title: "Topic selected",
-      description: `You selected: ${topic}`
-    });
-  };
-  
+const PulseBotPage = () => {
+  // Sample insights data
+  const insights = [
+    {
+      title: "Trust Factor",
+      content: "Recent surveys indicate a 12% increase in trust metrics across teams after implementing transparent communication practices."
+    },
+    {
+      title: "Engagement Patterns",
+      content: "Team engagement scores show higher correlation with direct manager interactions than with company-wide initiatives."
+    },
+    {
+      title: "Wellbeing Analysis",
+      content: "Flexible work arrangements have led to a 23% improvement in reported work-life balance satisfaction."
+    }
+  ];
+
   return (
-    <div className="container mx-auto p-4">
+    <div className="container mx-auto py-6 px-4">
+      <h1 className="text-2xl font-bold mb-6">PulseBot Assistant</h1>
+      
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-lg shadow-md overflow-hidden h-[600px] flex flex-col">
-            <div className="bg-pulse-blue text-white p-4">
-              <h2 className="text-lg font-semibold">PulseBot Assistant</h2>
-              <p className="text-sm opacity-80">AI-powered culture and trust guidance</p>
-            </div>
-            
-            <ChatInterface />
-          </div>
-          
-          <div className="mt-4">
-            <SuggestedTopics onTopicClick={handleTopicClick} />
-          </div>
+          <Card className="h-[600px] overflow-hidden">
+            <CardHeader className="bg-pulse-blue text-white">
+              <CardTitle>Chat with PulseBot</CardTitle>
+            </CardHeader>
+            <CardContent className="p-0 h-[calc(100%-73px)]">
+              <ChatInterface initialMessages={[{
+                id: "welcome",
+                content: "Hi there! I'm PulseBot, your workplace culture assistant. How can I help you today?",
+                sender: "bot",
+                timestamp: new Date()
+              }]} />
+            </CardContent>
+          </Card>
         </div>
         
-        <div>
-          <InsightsPanel 
-            insights={[
-              {
-                title: "Trust Enhancers",
-                content: "Regular team meetings and clear communication channels are building blocks for high-trust organizations."
-              },
-              {
-                title: "Engagement Tips",
-                content: "Recognize achievements publicly and create spaces for authentic team connection."
-              },
-              {
-                title: "Wellbeing Focus",
-                content: "Encourage work-life balance and create psychological safety for sharing concerns."
-              }
-            ]}
-          />
+        <div className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Ask About</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <SuggestedTopics onTopicClick={(topic) => console.log("Selected:", topic)} />
+            </CardContent>
+          </Card>
+          
+          <Card>
+            <CardHeader>
+              <CardTitle>Latest Insights</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {insights.map((insight, i) => (
+                  <div key={i} className="border-l-4 border-pulse-blue pl-3">
+                    <h3 className="font-medium">{insight.title}</h3>
+                    <p className="text-sm text-gray-600">{insight.content}</p>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

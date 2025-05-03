@@ -1,13 +1,13 @@
 
 import React from 'react';
 import { useDemo } from "@/contexts/DemoContext";
-import { DemoNavigation } from "@/components/demo/DemoNavigation";
+import DemoNavigation from "@/components/demo/DemoNavigation";
 import { ChatInterface } from "@/components/pulsebot/ChatInterface";
 import { SuggestedTopics } from "@/components/pulsebot/SuggestedTopics";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const DemoPulseBot = () => {
-  const { goToNextStage, goToPreviousStage } = useDemo();
+  const { nextStage, previousStage } = useDemo();
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -70,8 +70,8 @@ const DemoPulseBot = () => {
       </div>
 
       <DemoNavigation 
-        onNext={goToNextStage}
-        onPrevious={goToPreviousStage}
+        onNextClick={nextStage}
+        onBackClick={previousStage}
       />
     </div>
   );

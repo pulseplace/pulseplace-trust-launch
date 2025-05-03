@@ -1,7 +1,7 @@
 
 import React, { useState } from "react";
 import { useDemo } from "@/contexts/DemoContext";
-import { DemoNavigation } from "@/components/demo/DemoNavigation";
+import DemoNavigation from "@/components/demo/DemoNavigation";
 import { useSurveyLogic } from "@/components/demo/survey/hooks/useSurveyLogic";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -11,24 +11,24 @@ import LivePulseScore from "@/components/demo/survey/LivePulseScore";
 import ResponseFeedback from "@/components/demo/survey/ResponseFeedback";
 import ProcessingOverlay from "@/components/demo/survey/ProcessingOverlay";
 import SurveyQuestion from "@/components/survey/SurveyQuestion";
-import { questions } from "@/components/survey/questions";
+import { questions } from "@/components/demo/survey/surveyQuestions";
 
 interface DemoSurveyProps {
   onNext: () => void;
 }
 
 const DemoSurvey = ({ onNext }: DemoSurveyProps) => {
-  const { goToPreviousStage } = useDemo();
+  const { previousStage } = useDemo();
   const [showExplanation, setShowExplanation] = useState(true);
   const [processing, setProcessing] = useState(false);
   
   const {
     currentQuestion,
     answers,
-    score,
-    handleNext,
-    handleBack,
     handleAnswerChange,
+    handleNextQuestion,
+    handlePreviousQuestion,
+    progressPercentage,
   } = useSurveyLogic();
 
   const startDemo = () => {
@@ -44,7 +44,12 @@ const DemoSurvey = ({ onNext }: DemoSurveyProps) => {
   };
 
   if (showExplanation) {
-    return <SurveyExplanation onStart={startDemo} onBack={goToPreviousStage} />;
+    return (
+      <SurveyExplanation 
+        onStartClick={startDemo} 
+        onBackClick={previousStage} 
+      />
+    );
   }
 
   return (
@@ -58,7 +63,7 @@ const DemoSurvey = ({ onNext }: DemoSurveyProps) => {
               <h2 className="text-2xl font-bold text-pulse-blue">
                 Pulse Certified™ Assessment
               </h2>
-              <LivePulseScore score={score} />
+              <LivePulseScore value={progressPercentage} />
             </div>
 
             <div className="mb-6">
@@ -76,20 +81,21 @@ const DemoSurvey = ({ onNext }: DemoSurveyProps) => {
             </div>
 
             <SurveyQuestion
-              question={questions[currentQuestion].text}
-              explanationText={questions[currentQuestion].explanation}
+              id={questions[currentQuestion].id}
+              question={questions[currentQuestion].question}
+              options={questions[currentQuestion].options}
               value={answers[currentQuestion] || 0}
               onChange={(value) => handleAnswerChange(currentQuestion, value)}
             />
 
             {answers[currentQuestion] !== null && (
-              <ResponseFeedback rating={answers[currentQuestion] || 0} />
+              <ResponseFeedback value={answers[currentQuestion] || 0} />
             )}
 
             <div className="flex justify-between mt-8">
               <Button
                 variant="outline"
-                onClick={handleBack}
+                onClick={handlePreviousQuestion}
                 disabled={currentQuestion === 0}
                 className="flex items-center"
               >
@@ -99,7 +105,7 @@ const DemoSurvey = ({ onNext }: DemoSurveyProps) => {
 
               {currentQuestion < questions.length - 1 ? (
                 <Button
-                  onClick={handleNext}
+                  onClick={handleNextQuestion}
                   disabled={answers[currentQuestion] === null}
                   className="flex items-center bg-pulse-blue hover:bg-pulse-blue/90"
                 >

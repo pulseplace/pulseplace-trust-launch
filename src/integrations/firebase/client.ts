@@ -9,9 +9,9 @@ const firebaseConfig = {
   // Your Firebase configuration will go here
   // You'll need to replace these with your actual Firebase project details
   apiKey: "YOUR_API_KEY",
-  authDomain: "gtme.firebaseapp.com",
-  projectId: "gtme",
-  storageBucket: "gtme.appspot.com",
+  authDomain: "pulseplace-trust-launch.firebaseapp.com",
+  projectId: "pulseplace-trust-launch",
+  storageBucket: "pulseplace-trust-launch.appspot.com",
   messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
   appId: "YOUR_APP_ID"
 };
