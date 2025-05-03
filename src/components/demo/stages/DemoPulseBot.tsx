@@ -5,6 +5,7 @@ import DemoNavigation from "@/components/demo/DemoNavigation";
 import { ChatInterface } from "@/components/pulsebot/ChatInterface";
 import { SuggestedTopics } from "@/components/pulsebot/SuggestedTopics";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Message } from "@/components/pulsebot/types";
 
 const DemoPulseBot = () => {
   const { nextStage, previousStage } = useDemo();
