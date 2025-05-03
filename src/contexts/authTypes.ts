@@ -1,8 +1,8 @@
 
-import { Session, User } from "@supabase/supabase-js";
+import { User } from "firebase/auth";
 
 export type AuthContextType = {
-  session: Session | null;
+  session: null; // No session concept in Firebase, keeping for compatibility
   user: User | null;
   profile: any | null;
   isLoading: boolean;

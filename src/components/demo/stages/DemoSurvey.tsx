@@ -1,121 +1,124 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState } from "react";
+import { useDemo } from "@/contexts/DemoContext";
+import { DemoNavigation } from "@/components/demo/DemoNavigation";
+import { useSurveyLogic } from "@/components/demo/survey/hooks/useSurveyLogic";
+import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Slider } from "@/components/ui/slider";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
-import { useToast } from "@/components/ui/use-toast"
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer"
-import {
-  Command,
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-  CommandShortcut,
-} from "@/components/ui/command"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Calendar } from "@/components/ui/calendar"
-import { cn } from "@/lib/utils"
-import { format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
-import { SurveyQuestion } from "@/components/survey/SurveyQuestion";
+import { ArrowRight, ArrowLeft } from "lucide-react";
+import SurveyExplanation from "@/components/demo/survey/SurveyExplanation";
+import LivePulseScore from "@/components/demo/survey/LivePulseScore";
+import ResponseFeedback from "@/components/demo/survey/ResponseFeedback";
+import ProcessingOverlay from "@/components/demo/survey/ProcessingOverlay";
+import SurveyQuestion from "@/components/survey/SurveyQuestion";
 import { questions } from "@/components/survey/questions";
 
 interface DemoSurveyProps {
   onNext: () => void;
 }
 
-const DemoSurvey: React.FC<DemoSurveyProps> = ({ onNext }) => {
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [answers, setAnswers] = useState<number[]>(Array(questions.length).fill(0));
-  const { toast } = useToast();
+const DemoSurvey = ({ onNext }: DemoSurveyProps) => {
+  const { goToPreviousStage } = useDemo();
+  const [showExplanation, setShowExplanation] = useState(true);
+  const [processing, setProcessing] = useState(false);
+  
+  const {
+    currentQuestion,
+    answers,
+    score,
+    handleNext,
+    handleBack,
+    handleAnswerChange,
+  } = useSurveyLogic();
 
-  const currentQuestion = questions[currentQuestionIndex];
-  const currentAnswer = answers[currentQuestionIndex];
-
-  const handleAnswerChange = (value: number) => {
-    const newAnswers = [...answers];
-    newAnswers[currentQuestionIndex] = value;
-    setAnswers(newAnswers);
+  const startDemo = () => {
+    setShowExplanation(false);
   };
 
-  const handleNextQuestion = () => {
-    if (currentQuestionIndex < questions.length - 1) {
-      setCurrentQuestionIndex(currentQuestionIndex + 1);
-    } else {
-      // Optionally, handle survey completion here
-      toast({
-        title: "Survey Completed",
-        description: "Thank you for completing the demo survey!",
-      });
-      onNext(); // Proceed to the next demo stage
-    }
+  const finishSurvey = () => {
+    setProcessing(true);
+    setTimeout(() => {
+      setProcessing(false);
+      onNext();
+    }, 3000);
   };
 
-  const handlePrevQuestion = () => {
-    if (currentQuestionIndex > 0) {
-      setCurrentQuestionIndex(currentQuestionIndex - 1);
-    }
-  };
+  if (showExplanation) {
+    return <SurveyExplanation onStart={startDemo} onBack={goToPreviousStage} />;
+  }
 
   return (
-    <div className="flex flex-col space-y-4">
-      <Card>
-        <CardHeader>
-          <CardTitle>Question {currentQuestionIndex + 1} of {questions.length}</CardTitle>
-          <CardDescription>{currentQuestion.question}</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <SurveyQuestion
-            id={currentQuestion.id}
-            question={currentQuestion.question}
-            options={currentQuestion.options}
-            value={currentAnswer || 0}
-            onChange={handleAnswerChange}
-            contextualHelp={currentQuestion.contextHelp}
-          />
-        </CardContent>
-      </Card>
+    <div className="container mx-auto px-4 py-8">
+      <div className="max-w-3xl mx-auto">
+        {processing ? (
+          <ProcessingOverlay />
+        ) : (
+          <Card className="bg-white p-6 shadow-lg rounded-xl">
+            <div className="mb-8 flex justify-between items-center">
+              <h2 className="text-2xl font-bold text-pulse-blue">
+                Pulse Certified™ Assessment
+              </h2>
+              <LivePulseScore score={score} />
+            </div>
 
-      <div className="flex justify-between">
-        <Button variant="secondary" onClick={handlePrevQuestion} disabled={currentQuestionIndex === 0}>
-          Previous
-        </Button>
-        <Button onClick={handleNextQuestion}>
-          {currentQuestionIndex === questions.length - 1 ? "Finish" : "Next"}
-        </Button>
+            <div className="mb-6">
+              <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-pulse-blue transition-all duration-300"
+                  style={{
+                    width: `${((currentQuestion + 1) / questions.length) * 100}%`,
+                  }}
+                ></div>
+              </div>
+              <div className="mt-2 text-sm text-gray-500">
+                Question {currentQuestion + 1} of {questions.length}
+              </div>
+            </div>
+
+            <SurveyQuestion
+              question={questions[currentQuestion].text}
+              explanationText={questions[currentQuestion].explanation}
+              value={answers[currentQuestion] || 0}
+              onChange={(value) => handleAnswerChange(currentQuestion, value)}
+            />
+
+            {answers[currentQuestion] !== null && (
+              <ResponseFeedback rating={answers[currentQuestion] || 0} />
+            )}
+
+            <div className="flex justify-between mt-8">
+              <Button
+                variant="outline"
+                onClick={handleBack}
+                disabled={currentQuestion === 0}
+                className="flex items-center"
+              >
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Previous
+              </Button>
+
+              {currentQuestion < questions.length - 1 ? (
+                <Button
+                  onClick={handleNext}
+                  disabled={answers[currentQuestion] === null}
+                  className="flex items-center bg-pulse-blue hover:bg-pulse-blue/90"
+                >
+                  Next
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              ) : (
+                <Button
+                  onClick={finishSurvey}
+                  disabled={answers[currentQuestion] === null}
+                  className="flex items-center bg-pulse-blue hover:bg-pulse-blue/90"
+                >
+                  Complete Assessment
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              )}
+            </div>
+          </Card>
+        )}
       </div>
     </div>
   );

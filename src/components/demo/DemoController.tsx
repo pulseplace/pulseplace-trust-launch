@@ -71,7 +71,7 @@ const DemoController = () => {
       case DemoStage.ASSESSMENT_SETUP:
         return <DemoAssessmentSetup />;
       case DemoStage.SURVEY:
-        return <DemoSurvey />;
+        return <DemoSurvey onNext={() => setStage(DemoStage.ANALYSIS)} />;
       case DemoStage.ANALYSIS:
         return <DemoAnalysis />;
       case DemoStage.RESULTS:

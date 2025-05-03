@@ -1,100 +1,78 @@
 
-import React, { useEffect } from "react";
-import { motion } from "framer-motion";
-import { Bot } from "lucide-react";
-import ChatInterface from "@/components/pulsebot/ChatInterface";
-import SuggestedTopics from "@/components/pulsebot/SuggestedTopics";
-import InsightsPanel from "@/components/pulsebot/InsightsPanel";
-import DemoNavigation from "../DemoNavigation";
-import { usePulseBotChat } from "../pulsebot/hooks/usePulseBotChat";
-import { suggestedTopics } from "../pulsebot/data/suggestedTopics";
+import React from 'react';
 import { useDemo } from "@/contexts/DemoContext";
-import { toast } from "@/hooks/use-toast";
+import { DemoNavigation } from "@/components/demo/DemoNavigation";
+import { ChatInterface } from "@/components/pulsebot/ChatInterface";
+import { SuggestedTopics } from "@/components/pulsebot/SuggestedTopics";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const DemoPulseBot = () => {
-  const { messages, isLoading, handleSendMessage, handleClearChat } = usePulseBotChat();
-  const { organizationName } = useDemo();
-
-  // Show welcome toast when component mounts
-  useEffect(() => {
-    toast({
-      title: "Welcome to PulseBot",
-      description: "Your AI workplace culture assistant is ready to help",
-      duration: 5000,
-    });
-  }, []);
-
-  // Auto-send a welcome message if the messages array is empty or only has the initial bot message
-  useEffect(() => {
-    if (messages.length <= 1) {
-      const timer = setTimeout(() => {
-        handleSendMessage(`Tell me about ${organizationName}'s workplace culture strengths and opportunities.`);
-      }, 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [messages, handleSendMessage, organizationName]);
+  const { goToNextStage, goToPreviousStage } = useDemo();
 
   return (
-    <div className="container px-4 py-12 mx-auto">
-      <div className="max-w-6xl mx-auto">
-        <motion.div 
-          className="text-center mb-8"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <div className="inline-block p-3 bg-pulse-blue/10 rounded-full mb-4">
-            <Bot className="h-10 w-10 text-pulse-blue" />
-          </div>
-          <h1 className="text-3xl font-bold text-pulse-navy mb-2">
-            Meet PulseBot: Your AI Culture Guide
-          </h1>
-          <p className="text-lg text-gray-600">
-            Ask questions about workplace culture, trust metrics, or engagement strategies
-          </p>
-        </motion.div>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold text-center mb-2">PulseBot Assistant</h1>
+      <p className="text-gray-600 text-center mb-8">
+        Meet your AI workplace culture advisor, available 24/7
+      </p>
 
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-          <div className="lg:col-span-3 space-y-6">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4 }}
-            >
-              <ChatInterface
-                messages={messages}
-                isLoading={isLoading}
-                onSendMessage={handleSendMessage}
-                onClearChat={handleClearChat}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+        <div className="lg:col-span-2">
+          <Card className="overflow-hidden h-[600px]">
+            <CardHeader className="bg-pulse-blue text-white">
+              <CardTitle>PulseBot Conversation</CardTitle>
+            </CardHeader>
+            <CardContent className="p-0 h-[calc(100%-73px)]">
+              <ChatInterface initialMessages={[{
+                id: "welcome",
+                content: "Hi there! I'm PulseBot, your workplace culture assistant. How can I help you today?",
+                sender: "bot",
+                timestamp: new Date()
+              }]} />
+            </CardContent>
+          </Card>
+        </div>
+
+        <div className="space-y-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Ask PulseBot About...</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <SuggestedTopics 
+                onTopicClick={(topic) => console.log(`Selected topic: ${topic}`)}
+                suggestions={[
+                  "How can we build more trust?",
+                  "What are leading indicators of engagement?",
+                  "Best practices for onboarding",
+                  "Ways to improve team communication",
+                  "How to interpret PulseScore changes"
+                ]}
               />
-            </motion.div>
-          </div>
-          
-          <div className="space-y-6">
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4, delay: 0.2 }}
-            >
-              <SuggestedTopics
-                topics={suggestedTopics}
-                onTopicSelect={handleSendMessage}
-                isLoading={isLoading}
-              />
-            </motion.div>
-            
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4, delay: 0.4 }}
-            >
-              <InsightsPanel />
-            </motion.div>
-          </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>PulseBot Features</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="list-disc pl-5 space-y-2">
+                <li>Workplace culture best practices</li>
+                <li>Trust-building strategies</li>
+                <li>Engagement improvement tactics</li>
+                <li>PulseScore interpretation</li>
+                <li>Team wellbeing recommendations</li>
+              </ul>
+            </CardContent>
+          </Card>
         </div>
       </div>
-      
-      <DemoNavigation nextLabel="Continue Demo" />
+
+      <DemoNavigation 
+        onNext={goToNextStage}
+        onPrevious={goToPreviousStage}
+      />
     </div>
   );
 };

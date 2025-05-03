@@ -1,7 +1,7 @@
 
 import React, { createContext, useState, useEffect } from "react";
-import { Session, User } from "@supabase/supabase-js";
-import { supabase } from "@/integrations/supabase/client";
+import { User } from "firebase/auth";
+import { auth } from '@/integrations/firebase/client';
 import { AuthContextType } from "./authTypes";
 import { 
   fetchProfile, 
@@ -9,20 +9,20 @@ import {
   signUpWithEmailAndPassword, 
   signOutUser 
 } from "./authHelpers";
+import { onAuthStateChanged } from "firebase/auth";
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [session, setSession] = useState<Session | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [profile, setProfile] = useState<any | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const refreshProfile = async () => {
-    if (!user?.id) return;
+    if (!user?.uid) return;
     
     try {
-      const profileData = await fetchProfile(user.id);
+      const profileData = await fetchProfile(user.uid);
       setProfile(profileData);
     } catch (error) {
       console.error("Error refreshing profile:", error);
@@ -69,50 +69,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     console.log("Setting up auth state listener");
     
-    // Set up auth state listener FIRST
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        console.log('Auth state changed:', event, session);
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        // If user is available, fetch their profile
-        if (session?.user) {
-          setTimeout(() => {
-            fetchProfile(session.user.id).then(profileData => {
-              setProfile(profileData);
-            });
-          }, 0);
-        } else {
-          // If logged out, clear profile
-          setProfile(null);
-        }
-      }
-    );
-
-    // THEN check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      console.log('Existing session:', session);
-      setSession(session);
-      setUser(session?.user ?? null);
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      console.log('Auth state changed:', currentUser);
+      setUser(currentUser);
       
-      if (session?.user) {
-        fetchProfile(session.user.id).then(profileData => {
-          setProfile(profileData);
-        });
+      if (currentUser) {
+        setTimeout(() => {
+          fetchProfile(currentUser.uid).then(profileData => {
+            setProfile(profileData);
+          });
+        }, 0);
+      } else {
+        setProfile(null);
       }
       
-      // Set loading to false once we've checked for a session
+      // Set loading to false once we've checked for a user
       setIsLoading(false);
     });
 
-    return () => {
-      subscription.unsubscribe();
-    };
+    return () => unsubscribe();
   }, []);
 
   const value: AuthContextType = {
-    session,
+    session: null, // No session in Firebase, keeping for compatibility
     user,
     profile,
     isLoading,

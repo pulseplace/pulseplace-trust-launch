@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
+import { db } from '@/integrations/firebase/client';
+import { collection, addDoc, getDocs, query, where, orderBy, serverTimestamp, Timestamp } from 'firebase/firestore';
 import { toast } from "@/components/ui/use-toast";
 import { useAuth } from '@/hooks/useAuth';
 
@@ -43,63 +44,55 @@ export const useSurveyData = () => {
       localStorage.setItem('pulseplace_surveys', JSON.stringify(updatedSurveys));
       setStoredSurveys(updatedSurveys);
 
-      // Then attempt to save to Supabase
+      // Then attempt to save to Firebase
       try {
         if (user) {
           // If user is authenticated, find or create organization
+          const organizationsRef = collection(db, 'organizations');
           let organizationId: string | null = null;
           
           // Check if organization exists
-          let { data: existingOrg } = await supabase
-            .from('organizations')
-            .select('id')
-            .eq('name', surveyData.organizationName)
-            .maybeSingle();
-            
-          if (existingOrg) {
-            organizationId = existingOrg.id;
+          const q = query(organizationsRef, where('name', '==', surveyData.organizationName));
+          const querySnapshot = await getDocs(q);
+          
+          if (!querySnapshot.empty) {
+            organizationId = querySnapshot.docs[0].id;
           } else {
             // Create new organization
-            const { data: newOrg, error: orgError } = await supabase
-              .from('organizations')
-              .insert({
-                name: surveyData.organizationName,
-                size: surveyData.organizationSize
-              })
-              .select('id')
-              .single();
-              
-            if (orgError) throw orgError;
-            if (newOrg) organizationId = newOrg.id;
+            const newOrgRef = await addDoc(organizationsRef, {
+              name: surveyData.organizationName,
+              size: surveyData.organizationSize,
+              created_at: serverTimestamp()
+            });
+            
+            organizationId = newOrgRef.id;
           }
           
           // Save to survey_responses
-          await supabase
-            .from('survey_responses')
-            .insert({
-              organization_id: organizationId,
-              user_id: user.id,
-              organization_name: surveyData.organizationName,
-              organization_size: surveyData.organizationSize, 
-              email: surveyData.email,
-              answers: surveyData.answers,
-              score: surveyData.score,
-            });
+          await addDoc(collection(db, 'survey_responses'), {
+            organization_id: organizationId,
+            user_id: user.uid,
+            organization_name: surveyData.organizationName,
+            organization_size: surveyData.organizationSize, 
+            email: surveyData.email,
+            answers: surveyData.answers,
+            score: surveyData.score,
+            created_at: serverTimestamp()
+          });
         } else {
           // If not authenticated, save anonymously
-          await supabase
-            .from('survey_responses')
-            .insert({
-              organization_name: surveyData.organizationName,
-              organization_size: surveyData.organizationSize,
-              email: surveyData.email,
-              answers: surveyData.answers,
-              score: surveyData.score,
-              is_anonymous: true,
-            });
+          await addDoc(collection(db, 'survey_responses'), {
+            organization_name: surveyData.organizationName,
+            organization_size: surveyData.organizationSize,
+            email: surveyData.email,
+            answers: surveyData.answers,
+            score: surveyData.score,
+            is_anonymous: true,
+            created_at: serverTimestamp()
+          });
         }
       } catch (error) {
-        console.error("Error saving to Supabase:", error);
+        console.error("Error saving to Firebase:", error);
         // Continue with local storage data
       }
       
@@ -128,35 +121,41 @@ export const useSurveyData = () => {
       if (user) {
         try {
           // If authenticated, load user's responses
-          const { data, error } = await supabase
-            .from('survey_responses')
-            .select('*')
-            .eq('user_id', user.id)
-            .order('created_at', { ascending: false });
-            
-          if (error) throw error;
+          const q = query(
+            collection(db, 'survey_responses'),
+            where('user_id', '==', user.uid),
+            orderBy('created_at', 'desc')
+          );
           
-          if (data && data.length > 0) {
-            const formattedData: SurveyData[] = data.map(item => {
+          const querySnapshot = await getDocs(q);
+          
+          if (!querySnapshot.empty) {
+            const formattedData: SurveyData[] = querySnapshot.docs.map(doc => {
+              const data = doc.data();
+              
               // Process answers differently based on what we get from the database
               let processedAnswers: (number | null)[] = [];
               
-              if (Array.isArray(item.answers)) {
+              if (Array.isArray(data.answers)) {
                 // Try to convert each item to a number if possible
-                processedAnswers = item.answers.map(answer => {
+                processedAnswers = data.answers.map((answer: any) => {
                   if (answer === null) return null;
                   const num = Number(answer);
                   return isNaN(num) ? null : num;
                 });
               }
               
+              // Convert Firestore timestamp to string
+              const timestamp = data.created_at as Timestamp;
+              const submittedAt = timestamp ? timestamp.toDate().toISOString() : new Date().toISOString();
+              
               return {
-                organizationName: item.organization_name,
-                organizationSize: item.organization_size,
-                email: item.email,
+                organizationName: data.organization_name,
+                organizationSize: data.organization_size,
+                email: data.email,
                 answers: processedAnswers,
-                score: item.score,
-                submittedAt: item.created_at,
+                score: data.score,
+                submittedAt,
               };
             });
             
@@ -164,7 +163,7 @@ export const useSurveyData = () => {
             return formattedData;
           }
         } catch (error) {
-          console.error("Error loading from Supabase:", error);
+          console.error("Error loading from Firebase:", error);
         }
       }
       
