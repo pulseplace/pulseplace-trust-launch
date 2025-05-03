@@ -5,10 +5,11 @@ import { ChatInterface } from "@/components/pulsebot/ChatInterface";
 import { SuggestedTopics } from "@/components/pulsebot/SuggestedTopics";
 import { useAuth } from "@/hooks/useAuth";
 import { Navigate } from "react-router-dom";
+import { Message } from '@/components/pulsebot/types';
 
 const PulseBotPage = () => {
   const { user, isLoading } = useAuth();
-  const [messages, setMessages] = useState([{
+  const [messages, setMessages] = useState<Message[]>([{
     id: "welcome-message",
     content: "Hi there! I'm PulseBot, your workplace culture assistant. How can I help you today?",
     sender: "bot",

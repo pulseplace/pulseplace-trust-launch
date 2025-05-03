@@ -1,6 +1,6 @@
 
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageBubble } from "./MessageBubble";
+import MessageBubble from "./MessageBubble";
 import { Message } from "./types";
 import { collection, addDoc, query, orderBy, limit, getDocs, serverTimestamp } from 'firebase/firestore';
 import { db } from '@/integrations/firebase/client';
@@ -53,7 +53,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ initialMessages = 
         loadedMessages.push({
           id: doc.id,
           content: data.content,
-          sender: data.sender,
+          sender: data.sender as "user" | "bot" | "system",
           timestamp: data.timestamp?.toDate(),
         });
       });

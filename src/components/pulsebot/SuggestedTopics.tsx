@@ -3,16 +3,19 @@ import React from 'react';
 
 interface SuggestedTopicsProps {
   onTopicClick: (topic: string) => void;
+  suggestions?: string[];
 }
 
-export const SuggestedTopics: React.FC<SuggestedTopicsProps> = ({ onTopicClick }) => {
-  const topics = [
+export const SuggestedTopics: React.FC<SuggestedTopicsProps> = ({ onTopicClick, suggestions }) => {
+  const defaultTopics = [
     "How is the PulseScore calculated?",
     "What is Trust Certification?",
     "How do Pulse Surveys work?",
     "What metrics track emotional wellbeing?",
     "How can I improve team engagement?"
   ];
+  
+  const topics = suggestions || defaultTopics;
 
   return (
     <div className="space-y-2">
