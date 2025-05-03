@@ -92,7 +92,7 @@ export const ChatInterface = ({
         <div className="flex flex-col space-y-4">
           {messages.map((message) => (
             <MessageBubble
-              key={message.id}
+              key={typeof message.id === 'number' ? message.id.toString() : message.id}
               message={message}
             />
           ))}

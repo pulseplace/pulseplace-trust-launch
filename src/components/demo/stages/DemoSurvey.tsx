@@ -85,7 +85,7 @@ const DemoSurvey = ({ onNext }: DemoSurveyProps) => {
               question={questions[currentQuestion].question}
               options={questions[currentQuestion].options}
               value={answers[currentQuestion] || 0}
-              onChange={(value) => handleAnswerChange(currentQuestion, value)}
+              onChange={(value) => handleAnswerChange(value)}
             />
 
             {answers[currentQuestion] !== null && (

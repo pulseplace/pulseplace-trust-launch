@@ -33,7 +33,7 @@ const PulseBotPage = () => {
             </CardHeader>
             <CardContent className="p-0 h-[calc(100%-73px)]">
               <ChatInterface initialMessages={[{
-                id: "welcome",
+                id: "welcome-message",
                 content: "Hi there! I'm PulseBot, your workplace culture assistant. How can I help you today?",
                 sender: "bot",
                 timestamp: new Date()
