@@ -1,39 +1,30 @@
 
-import React from "react";
-
-export const defaultSuggestions = [
-  "How can we improve trust in our team?",
-  "What metrics should we track for engagement?",
-  "Best practices for emotional wellbeing",
-  "Ways to celebrate team success",
-  "How to interpret PulseScore trends"
-];
+import React from 'react';
 
 interface SuggestedTopicsProps {
   onTopicClick: (topic: string) => void;
-  suggestions?: string[];
 }
 
-export const SuggestedTopics: React.FC<SuggestedTopicsProps> = ({ 
-  onTopicClick,
-  suggestions = defaultSuggestions 
-}) => {
+export const SuggestedTopics: React.FC<SuggestedTopicsProps> = ({ onTopicClick }) => {
+  const topics = [
+    "How is the PulseScore calculated?",
+    "What is Trust Certification?",
+    "How do Pulse Surveys work?",
+    "What metrics track emotional wellbeing?",
+    "How can I improve team engagement?"
+  ];
+
   return (
-    <div className="mt-4 mb-6">
-      <h3 className="text-sm font-medium text-gray-500 mb-2">Suggested Topics</h3>
-      <div className="flex flex-wrap gap-2">
-        {suggestions.map((topic, index) => (
-          <button
-            key={index}
-            onClick={() => onTopicClick(topic)}
-            className="text-sm px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-gray-700 transition-colors"
-          >
-            {topic}
-          </button>
-        ))}
-      </div>
+    <div className="space-y-2">
+      {topics.map((topic, index) => (
+        <button
+          key={index}
+          className="w-full text-left px-3 py-2 text-sm rounded-md hover:bg-gray-100 transition-colors"
+          onClick={() => onTopicClick(topic)}
+        >
+          {topic}
+        </button>
+      ))}
     </div>
   );
 };
-
-export default SuggestedTopics;

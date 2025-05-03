@@ -1,10 +1,20 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { ChatInterface } from "@/components/pulsebot/ChatInterface";
 import { SuggestedTopics } from "@/components/pulsebot/SuggestedTopics";
+import { useAuth } from "@/hooks/useAuth";
+import { Navigate } from "react-router-dom";
 
 const PulseBotPage = () => {
+  const { user, isLoading } = useAuth();
+  const [messages, setMessages] = useState([{
+    id: "welcome-message",
+    content: "Hi there! I'm PulseBot, your workplace culture assistant. How can I help you today?",
+    sender: "bot",
+    timestamp: new Date()
+  }]);
+
   // Sample insights data
   const insights = [
     {
@@ -21,6 +31,24 @@ const PulseBotPage = () => {
     }
   ];
 
+  // Handle topic selection
+  const handleTopicClick = (topic: string) => {
+    setMessages(prev => [...prev, {
+      id: Date.now().toString(),
+      content: topic,
+      sender: "user",
+      timestamp: new Date()
+    }]);
+  };
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center h-screen">Loading...</div>;
+  }
+
+  if (!user) {
+    return <Navigate to="/auth" />;
+  }
+
   return (
     <div className="container mx-auto py-6 px-4">
       <h1 className="text-2xl font-bold mb-6">PulseBot Assistant</h1>
@@ -32,12 +60,7 @@ const PulseBotPage = () => {
               <CardTitle>Chat with PulseBot</CardTitle>
             </CardHeader>
             <CardContent className="p-0 h-[calc(100%-73px)]">
-              <ChatInterface initialMessages={[{
-                id: "welcome-message",
-                content: "Hi there! I'm PulseBot, your workplace culture assistant. How can I help you today?",
-                sender: "bot",
-                timestamp: new Date()
-              }]} />
+              <ChatInterface initialMessages={messages} />
             </CardContent>
           </Card>
         </div>
@@ -48,7 +71,7 @@ const PulseBotPage = () => {
               <CardTitle>Ask About</CardTitle>
             </CardHeader>
             <CardContent>
-              <SuggestedTopics onTopicClick={(topic) => console.log("Selected:", topic)} />
+              <SuggestedTopics onTopicClick={handleTopicClick} />
             </CardContent>
           </Card>
           
