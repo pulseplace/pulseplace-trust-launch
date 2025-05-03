@@ -10,7 +10,7 @@ const firebaseConfig = {
   authDomain: "pulseplace-trust-launch.firebaseapp.com",
   projectId: "pulseplace-trust-launch",
   storageBucket: "pulseplace-trust-launch.appspot.com",
-  messagingSenderId: "552435663746",
+  messagingSenderId: "422598830751",
   appId: "1:422598830751:web:088922f976678b83de50aa"
 };
 
