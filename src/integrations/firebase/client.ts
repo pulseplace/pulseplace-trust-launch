@@ -6,14 +6,12 @@ import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
-  // Your Firebase configuration will go here
-  // You'll need to replace these with your actual Firebase project details
-  apiKey: "YOUR_API_KEY",
+  apiKey: "AIzaSyCnVaBKe_ml0hG9X-IJEO8R8sfY8Mss284",
   authDomain: "pulseplace-trust-launch.firebaseapp.com",
   projectId: "pulseplace-trust-launch",
   storageBucket: "pulseplace-trust-launch.appspot.com",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  messagingSenderId: "552435663746",
+  appId: "1:552435663746:web:b1751fe4ef946b122b18c8"
 };
 
 // Initialize Firebase
